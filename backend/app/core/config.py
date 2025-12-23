@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     # OpenAI
     OPENAI_API_KEY: Optional[str] = None
     
+    # Google Gemini
+    GEMINI_API_KEY: Optional[str] = None
+    
     # Twilio (WhatsApp)
     TWILIO_ACCOUNT_SID: Optional[str] = None
     TWILIO_AUTH_TOKEN: Optional[str] = None
