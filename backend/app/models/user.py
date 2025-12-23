@@ -87,6 +87,9 @@ class User(Base):
     organization: Mapped[Optional["Organization"]] = relationship(
         back_populates="users"
     )
+    documents = relationship("Document", back_populates="user")
+    cbam_reports = relationship("CBAMReport", back_populates="user")
     
     def __repr__(self) -> str:
         return f"<User {self.email}>"
+

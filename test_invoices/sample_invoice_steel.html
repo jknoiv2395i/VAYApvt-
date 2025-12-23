@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Commercial Invoice - Steel Products</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; border-bottom: 3px solid #1e3a5f; padding-bottom: 20px; margin-bottom: 20px; }
+        .company { font-size: 24px; font-weight: bold; color: #1e3a5f; }
+        .invoice-title { font-size: 32px; font-weight: bold; color: #333; text-align: right; }
+        .invoice-no { color: #666; text-align: right; }
+        .parties { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .party { width: 45%; }
+        .party-title { font-weight: bold; color: #1e3a5f; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background-color: #1e3a5f; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; }
+        .totals { text-align: right; margin-top: 20px; }
+        .total-row { display: flex; justify-content: flex-end; margin: 5px 0; }
+        .total-label { width: 150px; }
+        .total-value { width: 120px; text-align: right; font-weight: bold; }
+        .grand-total { font-size: 18px; color: #1e3a5f; border-top: 2px solid #1e3a5f; padding-top: 10px; }
+        .hs-code { font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="company">STEEL EXPORTS INDIA PVT LTD</div>
+            <div>123 Industrial Area, Jamshedpur</div>
+            <div>Jharkhand, India - 831001</div>
+            <div>GSTIN: 20AABCS1234F1ZV</div>
+            <div>IEC: 0505001234</div>
+        </div>
+        <div>
+            <div class="invoice-title">COMMERCIAL INVOICE</div>
+            <div class="invoice-no">
+                <div><strong>Invoice No:</strong> INV-2024-001547</div>
+                <div><strong>Date:</strong> December 15, 2024</div>
+                <div><strong>PO Ref:</strong> EU-PO-89456</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="parties">
+        <div class="party">
+            <div class="party-title">EXPORTER (Seller)</div>
+            <div><strong>Steel Exports India Pvt Ltd</strong></div>
+            <div>123 Industrial Area</div>
+            <div>Jamshedpur, Jharkhand 831001</div>
+            <div>India</div>
+            <div>Tel: +91-657-2345678</div>
+            <div>Email: exports@steelexportsindia.com</div>
+        </div>
+        <div class="party">
+            <div class="party-title">IMPORTER (Buyer)</div>
+            <div><strong>EuroSteel Trading GmbH</strong></div>
+            <div>Industriestrasse 45</div>
+            <div>40221 Düsseldorf</div>
+            <div>Germany</div>
+            <div>VAT: DE123456789</div>
+            <div>Email: procurement@eurosteel.de</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Description of Goods</th>
+                <th>HS Code</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Net Wt (KG)</th>
+                <th>Unit Price (€)</th>
+                <th>Amount (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Stainless Steel Coils, Cold Rolled, Grade 304, 2mm thickness</td>
+                <td><span class="hs-code">72193400</span></td>
+                <td>20</td>
+                <td>Coils</td>
+                <td>25,000</td>
+                <td>€2,850.00</td>
+                <td>€57,000.00</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Carbon Steel Plates, Hot Rolled, 10mm x 1500mm x 6000mm</td>
+                <td><span class="hs-code">72085200</span></td>
+                <td>50</td>
+                <td>Plates</td>
+                <td>35,000</td>
+                <td>€1,240.00</td>
+                <td>€62,000.00</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Steel Wire Rod, Low Carbon, 5.5mm diameter</td>
+                <td><span class="hs-code">72139100</span></td>
+                <td>100</td>
+                <td>Bundles</td>
+                <td>15,000</td>
+                <td>€680.00</td>
+                <td>€68,000.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div class="total-row">
+            <div class="total-label">Subtotal:</div>
+            <div class="total-value">€187,000.00</div>
+        </div>
+        <div class="total-row">
+            <div class="total-label">Freight (CIF):</div>
+            <div class="total-value">€8,500.00</div>
+        </div>
+        <div class="total-row">
+            <div class="total-label">Insurance:</div>
+            <div class="total-value">€1,500.00</div>
+        </div>
+        <div class="total-row grand-total">
+            <div class="total-label">TOTAL CIF:</div>
+            <div class="total-value">€197,000.00</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <div><strong>Terms of Delivery:</strong> CIF Hamburg, Germany (Incoterms 2020)</div>
+        <div><strong>Payment Terms:</strong> 30 days from B/L date via L/C</div>
+        <div><strong>Country of Origin:</strong> INDIA</div>
+        <div><strong>Port of Loading:</strong> Kandla, India</div>
+        <div><strong>Port of Discharge:</strong> Hamburg, Germany</div>
+        <div><strong>Total Net Weight:</strong> 75,000 KG</div>
+        <div><strong>Total Gross Weight:</strong> 76,500 KG</div>
+    </div>
+
+    <div style="margin-top: 30px; background: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107;">
+        <strong>⚠️ CBAM Declaration:</strong> This shipment contains goods subject to the EU Carbon Border Adjustment Mechanism (CBAM). 
+        HS Codes 7208, 7219, and 7213 fall under CBAM Category: <strong>Iron & Steel</strong>.
+        Embedded emissions documentation is attached separately.
+    </div>
+
+    <div class="footer">
+        <p><strong>Bank Details:</strong> State Bank of India, SWIFT: SBININBB104, A/C: 12345678901234, IFSC: SBIN0001234</p>
+        <p>We certify that the goods are of Indian origin and the information provided is true and correct.</p>
+        <p style="margin-top: 30px;">
+            <strong>Authorized Signatory</strong><br>
+            Steel Exports India Pvt Ltd
+        </p>
+    </div>
+</body>
+</html>
