@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     # Google Gemini
     GEMINI_API_KEY: Optional[str] = None
     
+    # OpenRouter (for AI Trade Advisor)
+    OPENROUTER_API_KEY: Optional[str] = None
+    
     # Twilio (WhatsApp)
     TWILIO_ACCOUNT_SID: Optional[str] = None
     TWILIO_AUTH_TOKEN: Optional[str] = None

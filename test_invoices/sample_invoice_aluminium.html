@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Commercial Invoice - Aluminium Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .company {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .invoice-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            text-align: right;
+        }
+
+        .invoice-no {
+            color: #666;
+            text-align: right;
+        }
+
+        .parties {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .party {
+            width: 45%;
+        }
+
+        .party-title {
+            font-weight: bold;
+            color: #0066cc;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th {
+            background-color: #0066cc;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .totals {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: flex-end;
+            margin: 5px 0;
+        }
+
+        .total-label {
+            width: 150px;
+        }
+
+        .total-value {
+            width: 120px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .grand-total {
+            font-size: 18px;
+            color: #0066cc;
+            border-top: 2px solid #0066cc;
+            padding-top: 10px;
+        }
+
+        .hs-code {
+            font-family: monospace;
+            background: #e6f2ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div>
+            <div class="company">HINDALCO ALUMINIUM EXPORTS</div>
+            <div>45 MIDC Industrial Estate</div>
+            <div>Pune, Maharashtra - 411026</div>
+            <div>GSTIN: 27AABCH5678G1ZX</div>
+            <div>IEC: 3105008765</div>
+        </div>
+        <div>
+            <div class="invoice-title">COMMERCIAL INVOICE</div>
+            <div class="invoice-no">
+                <div><strong>Invoice No:</strong> HAE/EXP/2024/0892</div>
+                <div><strong>Date:</strong> December 18, 2024</div>
+                <div><strong>PO Ref:</strong> FR-2024-7823</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="parties">
+        <div class="party">
+            <div class="party-title">EXPORTER (Seller)</div>
+            <div><strong>Hindalco Aluminium Exports</strong></div>
+            <div>45 MIDC Industrial Estate</div>
+            <div>Pune, Maharashtra 411026</div>
+            <div>India</div>
+            <div>Tel: +91-20-6789012</div>
+            <div>Email: exports@hindalco-alu.com</div>
+        </div>
+        <div class="party">
+            <div class="party-title">IMPORTER (Buyer)</div>
+            <div><strong>Aluminium France SARL</strong></div>
+            <div>27 Rue de l'Industrie</div>
+            <div>69003 Lyon</div>
+            <div>France</div>
+            <div>VAT: FR98765432101</div>
+            <div>Email: achats@alufrance.fr</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Description of Goods</th>
+                <th>HS Code</th>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Net Wt (KG)</th>
+                <th>Unit Price (€)</th>
+                <th>Amount (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Aluminium Alloy Sheets, 6061-T6, 3mm x 1220mm x 2440mm</td>
+                <td><span class="hs-code">76061200</span></td>
+                <td>200</td>
+                <td>Sheets</td>
+                <td>12,000</td>
+                <td>€145.00</td>
+                <td>€29,000.00</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Aluminium Extrusion Profiles, T-Slot, 40x40mm</td>
+                <td><span class="hs-code">76042900</span></td>
+                <td>500</td>
+                <td>Pcs</td>
+                <td>8,500</td>
+                <td>€42.00</td>
+                <td>€21,000.00</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Aluminium Wire, EC Grade, 9.5mm Rod</td>
+                <td><span class="hs-code">76051100</span></td>
+                <td>50</td>
+                <td>Coils</td>
+                <td>5,000</td>
+                <td>€520.00</td>
+                <td>€26,000.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div class="total-row">
+            <div class="total-label">Subtotal:</div>
+            <div class="total-value">€76,000.00</div>
+        </div>
+        <div class="total-row">
+            <div class="total-label">Freight (FOB):</div>
+            <div class="total-value">€4,200.00</div>
+        </div>
+        <div class="total-row grand-total">
+            <div class="total-label">TOTAL FOB:</div>
+            <div class="total-value">€80,200.00</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <div><strong>Terms of Delivery:</strong> FOB Mumbai, India (Incoterms 2020)</div>
+        <div><strong>Payment Terms:</strong> 60 days DA</div>
+        <div><strong>Country of Origin:</strong> INDIA</div>
+        <div><strong>Port of Loading:</strong> Nhava Sheva (JNPT), India</div>
+        <div><strong>Port of Discharge:</strong> Marseille, France</div>
+        <div><strong>Total Net Weight:</strong> 25,500 KG</div>
+        <div><strong>Total Gross Weight:</strong> 26,200 KG</div>
+    </div>
+
+    <div
+        style="margin-top: 30px; background: #cce5ff; padding: 15px; border-radius: 5px; border-left: 4px solid #0066cc;">
+        <strong>ℹ️ CBAM Declaration:</strong> This shipment contains goods subject to the EU Carbon Border Adjustment
+        Mechanism (CBAM).
+        HS Codes 7604, 7605, and 7606 fall under CBAM Category: <strong>Aluminium</strong>.
+        Embedded emissions: Estimated 8.7 tCO₂e per tonne of aluminium.
+    </div>
+
+    <div class="footer">
+        <p><strong>Bank Details:</strong> HDFC Bank Ltd, SWIFT: HDFCINBB, A/C: 50200045678901, IFSC: HDFC0001234</p>
+        <p>We certify that the goods are of Indian origin and the information provided is true and correct.</p>
+        <p style="margin-top: 30px;">
+            <strong>Authorized Signatory</strong><br>
+            Hindalco Aluminium Exports
+        </p>
+    </div>
+</body>
+
+</html>

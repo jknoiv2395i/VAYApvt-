@@ -10,7 +10,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
 
-from app.services.gemini_service import get_gemini_service
+# Use OpenRouter for AI (free tier)
+from app.services.openrouter_service import get_openrouter_service
 
 router = APIRouter()
 
@@ -55,7 +56,7 @@ async def ai_match_hs_code(request: HSCodeQuery):
     and need to find the correct HS classification.
     """
     try:
-        service = get_gemini_service()
+        service = get_openrouter_service()
         result = await service.match_hs_code(request.product_description)
         
         suggestions = []
@@ -90,7 +91,7 @@ async def ask_trade_question(request: TradeQueryRequest):
     - Indian customs procedures
     """
     try:
-        service = get_gemini_service()
+        service = get_openrouter_service()
         answer = await service.answer_trade_query(request.question)
         
         return TradeQueryResponse(
