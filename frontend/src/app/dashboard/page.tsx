@@ -1,19 +1,6 @@
 
 "use client";
 
-<<<<<<< HEAD
-import { useState } from "react";
-import { hsCodeApi, HSCodeResult } from "@/lib/api";
-import { HSSearchForm } from "@/components/hs-lookup/hs-search-form";
-import { HSResultsTable } from "@/components/hs-lookup/hs-results-table";
-
-export default function DashboardPage() {
-    const [searchResults, setSearchResults] = useState<HSCodeResult[]>([]);
-    const [searching, setSearching] = useState(false);
-    const [hasSearched, setHasSearched] = useState(false);
-
-    const handleSearch = async (query: string) => {
-=======
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -114,14 +101,8 @@ export default function DashboardPage() {
     const handleAISearch = async () => {
         if (!searchQuery.trim()) return;
 
->>>>>>> d18b8987acc0d50668f6e1f525ec7eed640ea6fb
         setSearching(true);
-        setHasSearched(true);
         try {
-<<<<<<< HEAD
-            const response = await hsCodeApi.search(query);
-            setSearchResults(response.data.results);
-=======
             const response = await fetch('http://localhost:8000/api/v1/ai/match-hs-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -129,7 +110,6 @@ export default function DashboardPage() {
             });
             const data = await response.json();
             setAiResults(data.suggestions || []);
->>>>>>> d18b8987acc0d50668f6e1f525ec7eed640ea6fb
         } catch (error) {
             console.error("Search failed:", error);
             // Could add toast notification here
@@ -138,29 +118,6 @@ export default function DashboardPage() {
         }
     };
 
-<<<<<<< HEAD
-    return (
-        <div>
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-white mb-2">HS Code Lookup</h1>
-                <p className="text-gray-400">Search for Indian HS codes and check CBAM applicability</p>
-            </div>
-
-            <div className="max-w-3xl mb-8">
-                <HSSearchForm onSearch={handleSearch} isLoading={searching} />
-            </div>
-
-            {hasSearched && (
-                <div className="animation-fade-in">
-                    <HSResultsTable results={searchResults} isLoading={searching} />
-                </div>
-            )}
-
-            {!hasSearched && (
-                <div className="text-center py-16 opacity-50">
-                    <p className="text-gray-500">Start by searching for a product code or name.</p>
-                </div>
-=======
     const handleLogout = () => {
         localStorage.removeItem("vaya_unlocked");
         setUnlocked(false);
@@ -473,7 +430,6 @@ export default function DashboardPage() {
             {/* Mobile Overlay */}
             {sidebarOpen && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
->>>>>>> d18b8987acc0d50668f6e1f525ec7eed640ea6fb
             )}
         </div>
     );
