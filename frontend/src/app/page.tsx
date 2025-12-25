@@ -63,12 +63,17 @@ export default function Home() {
             </div>
             <div className="hidden md:flex items-center gap-8">
               <Link href="/hs-codes" className="text-gray-400 hover:text-white transition-colors">HS Codes</Link>
+              <Link href="/cbam-engine" className="text-gray-400 hover:text-white transition-colors flex items-center gap-1">
+                <Zap className="w-4 h-4" />
+                CBAM Engine
+              </Link>
               <Link href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
               <Link href="/advisor" className="text-gray-400 hover:text-white transition-colors flex items-center gap-1">
                 <Bot className="w-4 h-4" />
                 AI Advisor
               </Link>
             </div>
+
             <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
