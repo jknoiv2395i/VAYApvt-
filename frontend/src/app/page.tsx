@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   Search,
@@ -26,6 +27,7 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [currentWord, setCurrentWord] = useState(0);
   const words = ["Simple", "Fast", "Accurate", "Compliant"];
+  const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,9 +38,9 @@ export default function Home() {
 
   const handleSearch = () => {
     if (searchQuery) {
-      window.location.href = `/dashboard?search=${encodeURIComponent(searchQuery)}`;
+      router.push(`/dashboard?search=${encodeURIComponent(searchQuery)}`);
     } else {
-      window.location.href = '/dashboard';
+      router.push('/dashboard');
     }
   };
 
