@@ -54,7 +54,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-rotate features
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % 4);
@@ -76,7 +75,7 @@ export default function Home() {
       icon: Factory,
       title: 'CBAM Reporting',
       subtitle: 'EU Carbon Border Adjustment',
-      description: 'Generate EU-compliant XML reports for carbon border adjustment mechanism. Calculate emissions, estimate costs, and submit to the CBAM transitional registry.',
+      description: 'Generate EU-compliant XML reports for carbon border adjustment mechanism.',
       screenshot: '/cbam-dashboard.png',
       color: 'emerald',
       link: '/cbam',
@@ -92,7 +91,7 @@ export default function Home() {
       icon: Bot,
       title: 'AI Trade Advisor',
       subtitle: 'Intelligent Trade Assistant',
-      description: 'Ask any trade compliance question in natural language. Get expert answers on duties, regulations, HS codes, CBAM, EUDR, and Indian export procedures.',
+      description: 'Ask any trade compliance question in natural language.',
       screenshot: '/cbam-modal.png',
       color: 'violet',
       link: '/advisor',
@@ -108,7 +107,7 @@ export default function Home() {
       icon: Upload,
       title: 'Smart Document Processing',
       subtitle: 'AI-Powered Extraction',
-      description: 'Upload invoices, packing lists, and shipping documents. AI automatically extracts HS codes, quantities, and values for compliance checks.',
+      description: 'Upload invoices and let AI extract HS codes, quantities, and values.',
       screenshot: '/cbam-xml.png',
       color: 'amber',
       link: '/documents',
@@ -124,7 +123,7 @@ export default function Home() {
       icon: Search,
       title: 'HS Code Intelligence',
       subtitle: 'Smart Classification',
-      description: 'Search 15,000+ HS codes with AI. Describe your product in plain text and get accurate 8-digit codes with duty rates and compliance requirements.',
+      description: 'Search 15,000+ HS codes with AI classification.',
       screenshot: '/cbam-dashboard.png',
       color: 'cyan',
       link: '/dashboard',
@@ -139,9 +138,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
-      {/* Animated Background with Ethereal Shadow */}
+      {/* Hero Section with Ethereal Shadow */}
       <section className="relative h-screen flex flex-col justify-center overflow-hidden">
-        {/* Ethereal Shadow Background */}
         <div className="absolute inset-0 z-0">
           <EtherealShadow
             color="rgba(16, 185, 129, 0.8)"
@@ -187,7 +185,7 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Hero Section */}
+        {/* Hero Content */}
         <div className="relative pt-28 pb-16 px-4 z-10">
           <div className="max-w-7xl mx-auto">
             <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -295,7 +293,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Interactive Feature Showcase */}
+      {/* Features Section */}
       <section id="features" className="py-24 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -304,18 +302,18 @@ export default function Home() {
               One Platform, Complete <span className="text-emerald-400">Compliance</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Everything you need to navigate EU trade regulations - from HS codes to CBAM reports
+              Everything you need to navigate EU trade regulations
             </p>
           </div>
 
-          {/* Feature Selector Tabs */}
+          {/* Feature Tabs */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {mainFeatures.map((feature, i) => (
               <button
                 key={feature.id}
                 onClick={() => setActiveFeature(i)}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all ${activeFeature === i
-                    ? `bg-${feature.color}-500/20 text-${feature.color}-400 border border-${feature.color}-500/50`
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
                     : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
                   }`}
               >
@@ -325,27 +323,18 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Active Feature Display */}
+          {/* Active Feature */}
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Feature Info */}
-            <div className={`transition-all duration-500`}>
-              <div className={`w-16 h-16 rounded-2xl bg-${mainFeatures[activeFeature].color}-500/20 flex items-center justify-center mb-6`}>
+            <div>
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-6">
                 {(() => {
                   const IconComponent = mainFeatures[activeFeature].icon;
-                  return <IconComponent className={`w-8 h-8 text-${mainFeatures[activeFeature].color}-400`} />;
+                  return <IconComponent className="w-8 h-8 text-emerald-400" />;
                 })()}
               </div>
-              <span className={`text-${mainFeatures[activeFeature].color}-400 text-sm font-medium`}>
-                {mainFeatures[activeFeature].subtitle}
-              </span>
-              <h3 className="text-3xl font-bold text-white mt-2 mb-4">
-                {mainFeatures[activeFeature].title}
-              </h3>
-              <p className="text-lg text-gray-400 mb-8">
-                {mainFeatures[activeFeature].description}
-              </p>
-
-              {/* Feature Stats */}
+              <span className="text-emerald-400 text-sm font-medium">{mainFeatures[activeFeature].subtitle}</span>
+              <h3 className="text-3xl font-bold text-white mt-2 mb-4">{mainFeatures[activeFeature].title}</h3>
+              <p className="text-lg text-gray-400 mb-8">{mainFeatures[activeFeature].description}</p>
               <div className="grid grid-cols-3 gap-4 mb-8">
                 {mainFeatures[activeFeature].stats.map((stat) => (
                   <div key={stat.label} className="p-4 bg-white/5 border border-white/10 rounded-xl text-center">
@@ -354,26 +343,22 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-
-              {/* Feature List */}
               <div className="grid grid-cols-2 gap-3 mb-8">
                 {mainFeatures[activeFeature].features.map((f) => (
                   <div key={f} className="flex items-center gap-2 text-gray-300">
-                    <Check className={`w-4 h-4 text-${mainFeatures[activeFeature].color}-400 flex-shrink-0`} />
+                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                     <span className="text-sm">{f}</span>
                   </div>
                 ))}
               </div>
-
               <Link
                 href={mainFeatures[activeFeature].link}
-                className={`inline-flex items-center gap-2 px-6 py-3 bg-${mainFeatures[activeFeature].color}-500/20 border border-${mainFeatures[activeFeature].color}-500/50 text-${mainFeatures[activeFeature].color}-400 rounded-xl hover:bg-${mainFeatures[activeFeature].color}-500/30 transition-all`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-all"
               >
                 Try {mainFeatures[activeFeature].title} <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
-            {/* Right - Screenshot */}
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-slate-900">
                 <div className="absolute top-0 left-0 right-0 h-8 bg-slate-800 flex items-center gap-2 px-4 z-10">
@@ -391,9 +376,7 @@ export default function Home() {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
               </div>
-
-              {/* Floating badge */}
-              <div className={`absolute -bottom-4 -right-4 px-4 py-2 bg-${mainFeatures[activeFeature].color}-500 text-white rounded-xl font-medium text-sm shadow-lg`}>
+              <div className="absolute -bottom-4 -right-4 px-4 py-2 bg-emerald-500 text-white rounded-xl font-medium text-sm shadow-lg">
                 Live Preview
               </div>
             </div>
@@ -407,20 +390,20 @@ export default function Home() {
           <div className="text-center mb-16">
             <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Complete Toolkit</span>
             <h2 className="text-4xl font-bold text-white mt-4 mb-4">Everything for <span className="text-emerald-400">EU Trade Compliance</span></h2>
-            <p className="text-gray-400 max-w-xl mx-auto">Comprehensive tools designed for Indian exporters to meet EU regulations</p>
+            <p className="text-gray-400 max-w-xl mx-auto">Comprehensive tools for Indian exporters</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: Factory, title: "CBAM Reports", description: "EU-compliant XML generation with emissions calculation and carbon cost estimation", color: "emerald", link: "/cbam", tag: "Core" },
-              { icon: Bot, title: "AI Trade Advisor", description: "Natural language Q&A for duties, regulations, and compliance guidance", color: "violet", link: "/advisor", tag: "AI" },
-              { icon: Upload, title: "Invoice OCR", description: "Upload documents and auto-extract HS codes, quantities, and values", color: "amber", link: "/documents", tag: "Smart" },
-              { icon: Search, title: "HS Code Lookup", description: "Search 15K+ codes with AI classification and duty calculators", color: "cyan", link: "/dashboard", tag: "Database" },
-              { icon: Leaf, title: "EUDR Compliance", description: "Geolocation validation and due diligence for deforestation-free exports", color: "green", link: "#", soon: true, tag: "Soon" },
-              { icon: MessageCircle, title: "WhatsApp Bot", description: "Quick HS code lookups and trade questions via WhatsApp", color: "teal", link: "#", tag: "Mobile" },
-              { icon: Layers, title: "Multi-Invoice Merge", description: "Combine multiple invoices into single quarterly CBAM submissions", color: "purple", link: "/cbam", tag: "Pro" },
-              { icon: RefreshCw, title: "Status Workflow", description: "Track reports from Draft → Validated → Submitted with audit trail", color: "pink", link: "/cbam", tag: "Workflow" },
-              { icon: BarChart3, title: "Analytics Dashboard", description: "Track carbon footprint, costs, and compliance metrics over time", color: "orange", link: "/analytics", tag: "Insights" },
+              { icon: Factory, title: "CBAM Reports", description: "EU-compliant XML generation with emissions calculation", color: "emerald", link: "/cbam", tag: "Core" },
+              { icon: Bot, title: "AI Trade Advisor", description: "Natural language Q&A for duties and regulations", color: "violet", link: "/advisor", tag: "AI" },
+              { icon: Upload, title: "Invoice OCR", description: "Auto-extract HS codes from documents", color: "amber", link: "/documents", tag: "Smart" },
+              { icon: Search, title: "HS Code Lookup", description: "Search 15K+ codes with AI classification", color: "cyan", link: "/dashboard", tag: "Database" },
+              { icon: Leaf, title: "EUDR Compliance", description: "Geolocation validation for deforestation-free exports", color: "green", link: "#", soon: true, tag: "Soon" },
+              { icon: MessageCircle, title: "WhatsApp Bot", description: "Quick HS code lookups via WhatsApp", color: "teal", link: "#", tag: "Mobile" },
+              { icon: Layers, title: "Multi-Invoice Merge", description: "Combine invoices into single submissions", color: "purple", link: "/cbam", tag: "Pro" },
+              { icon: RefreshCw, title: "Status Workflow", description: "Track reports from Draft to Submitted", color: "pink", link: "/cbam", tag: "Workflow" },
+              { icon: BarChart3, title: "Analytics Dashboard", description: "Track carbon footprint and compliance metrics", color: "orange", link: "/analytics", tag: "Insights" },
             ].map((feature) => (
               <Link
                 key={feature.title}
@@ -430,14 +413,14 @@ export default function Home() {
                 {feature.soon ? (
                   <span className="absolute top-4 right-4 px-2 py-1 text-xs bg-amber-500/20 text-amber-400 rounded-full">Coming Soon</span>
                 ) : (
-                  <span className={`absolute top-4 right-4 px-2 py-1 text-xs bg-${feature.color}-500/20 text-${feature.color}-400 rounded-full`}>{feature.tag}</span>
+                  <span className="absolute top-4 right-4 px-2 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded-full">{feature.tag}</span>
                 )}
-                <div className={`w-14 h-14 rounded-xl bg-${feature.color}-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className={`w-7 h-7 text-${feature.color}-400`} />
+                <div className="w-14 h-14 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <feature.icon className="w-7 h-7 text-emerald-400" />
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
                 <p className="text-gray-400 mb-4 text-sm">{feature.description}</p>
-                <span className={`text-${feature.color}-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all`}>
+                <span className="text-emerald-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                   Explore <ChevronRight className="w-4 h-4" />
                 </span>
               </Link>
@@ -454,16 +437,14 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-white mt-4 mb-4">How VAYA <span className="text-emerald-400">Works</span></h2>
             <p className="text-gray-400">From upload to compliant report in 4 simple steps</p>
           </div>
-
           <div className="relative">
             <div className="absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent hidden md:block" />
-
             <div className="grid md:grid-cols-4 gap-8">
               {[
-                { step: '01', title: 'Upload or Search', desc: 'Upload invoice/PDF or search HS codes by product description', icon: Upload },
-                { step: '02', title: 'AI Processing', desc: 'AI extracts data, classifies products, and validates codes', icon: Sparkles },
-                { step: '03', title: 'Generate Reports', desc: 'Create CBAM/EUDR reports with calculated emissions and costs', icon: FileCode },
-                { step: '04', title: 'Submit & Track', desc: 'Download XML, submit to EU registry, and track status', icon: Check },
+                { step: '01', title: 'Upload or Search', desc: 'Upload invoice or search HS codes', icon: Upload },
+                { step: '02', title: 'AI Processing', desc: 'AI extracts data and validates codes', icon: Sparkles },
+                { step: '03', title: 'Generate Reports', desc: 'Create CBAM/EUDR reports', icon: FileCode },
+                { step: '04', title: 'Submit & Track', desc: 'Download XML and track status', icon: Check },
               ].map((item, i) => (
                 <div key={i} className="relative text-center group">
                   <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border-2 border-emerald-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:border-emerald-500 transition-all">
@@ -515,7 +496,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Pricing */}
       <section id="pricing" className="py-24 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
@@ -523,41 +504,13 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-white mt-4 mb-4">Simple, <span className="text-emerald-400">Transparent</span> Pricing</h2>
             <p className="text-gray-400">Start free, scale as you grow</p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              {
-                name: "Free",
-                price: "₹0",
-                period: "forever",
-                features: ["10 HS Code lookups/month", "3 CBAM reports/month", "AI Trade Advisor", "Email support"],
-                cta: "Get Started",
-                popular: false,
-              },
-              {
-                name: "Pro",
-                price: "₹2,499",
-                period: "/month",
-                features: ["Unlimited HS lookups", "Unlimited CBAM reports", "Invoice OCR & extraction", "Multi-invoice merge", "Priority support", "API access"],
-                cta: "Start Free Trial",
-                popular: true,
-              },
-              {
-                name: "Enterprise",
-                price: "Custom",
-                period: "",
-                features: ["Everything in Pro", "Dedicated account manager", "Custom integrations", "SLA guarantee", "On-premise deployment", "Training & onboarding"],
-                cta: "Contact Sales",
-                popular: false,
-              },
+              { name: "Free", price: "₹0", period: "forever", features: ["10 HS Code lookups/month", "3 CBAM reports/month", "AI Trade Advisor", "Email support"], cta: "Get Started", popular: false },
+              { name: "Pro", price: "₹2,499", period: "/month", features: ["Unlimited HS lookups", "Unlimited CBAM reports", "Invoice OCR & extraction", "Multi-invoice merge", "Priority support", "API access"], cta: "Start Free Trial", popular: true },
+              { name: "Enterprise", price: "Custom", period: "", features: ["Everything in Pro", "Dedicated account manager", "Custom integrations", "SLA guarantee", "On-premise deployment", "Training & onboarding"], cta: "Contact Sales", popular: false },
             ].map((plan) => (
-              <div
-                key={plan.name}
-                className={`p-8 rounded-2xl border ${plan.popular
-                  ? "bg-gradient-to-b from-emerald-500/10 to-transparent border-emerald-500/50 relative"
-                  : "bg-white/5 border-white/10"
-                  }`}
-              >
+              <div key={plan.name} className={`p-8 rounded-2xl border ${plan.popular ? "bg-gradient-to-b from-emerald-500/10 to-transparent border-emerald-500/50 relative" : "bg-white/5 border-white/10"}`}>
                 {plan.popular && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-medium rounded-full flex items-center gap-1">
                     <Star className="w-3 h-3" /> Most Popular
@@ -576,13 +529,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href="/dashboard"
-                  className={`block w-full py-3 text-center rounded-xl font-medium transition-all ${plan.popular
-                    ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                    }`}
-                >
+                <Link href="/dashboard" className={`block w-full py-3 text-center rounded-xl font-medium transition-all ${plan.popular ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25" : "bg-white/10 text-white hover:bg-white/20"}`}>
                   {plan.cta}
                 </Link>
               </div>
@@ -591,7 +538,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="relative">
@@ -600,25 +547,17 @@ export default function Home() {
               <Leaf className="w-16 h-16 text-emerald-400 mx-auto mb-6" />
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                 Ready to Simplify Your<br />
-                <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                  EU Export Compliance?
-                </span>
+                <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">EU Export Compliance?</span>
               </h2>
               <p className="text-xl text-gray-400 mb-8 max-w-xl mx-auto">
                 Join 500+ Indian exporters who trust VAYA for CBAM, EUDR, and trade compliance
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/dashboard"
-                  className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2"
-                >
+                <Link href="/dashboard" className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
                   <Sparkles className="w-5 h-5" />
                   Start Free
                 </Link>
-                <Link
-                  href="/cbam"
-                  className="px-8 py-4 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-all border border-white/10 flex items-center justify-center gap-2"
-                >
+                <Link href="/cbam" className="px-8 py-4 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-all border border-white/10 flex items-center justify-center gap-2">
                   <Factory className="w-5 h-5" />
                   Try CBAM Reports
                 </Link>
@@ -641,7 +580,7 @@ export default function Home() {
                 <span className="font-bold text-xl text-white">VAYA</span>
               </div>
               <p className="text-sm text-gray-500 mb-4">
-                Complete trade compliance platform for Indian exporters. CBAM, EUDR, HS codes, and more.
+                Complete trade compliance platform for Indian exporters.
               </p>
               <div className="flex items-center gap-2">
                 <img src="https://flagcdn.com/24x18/eu.png" alt="EU" className="opacity-60" />

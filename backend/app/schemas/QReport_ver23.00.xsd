@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  EU CBAM QReport Schema - Placeholder
+  
+  This is a simplified placeholder for the official EU CBAM QReport_ver23.00.xsd schema.
+  In production, replace with the actual XSD from the EU CBAM portal.
+  
+  Official schema available at:
+  https://ec.europa.eu/taxation_customs/cbam
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="urn:eu:ec:cbam:qreport:v2300"
+           targetNamespace="urn:eu:ec:cbam:qreport:v2300"
+           elementFormDefault="qualified">
+    
+    <!-- Root Element -->
+    <xs:element name="QReport" type="QReportType"/>
+    
+    <!-- QReport Type -->
+    <xs:complexType name="QReportType">
+        <xs:sequence>
+            <xs:element name="Header" type="HeaderType"/>
+            <xs:element name="Declarant" type="DeclarantType"/>
+            <xs:element name="GoodsList" type="GoodsListType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Header Type -->
+    <xs:complexType name="HeaderType">
+        <xs:sequence>
+            <xs:element name="ReportId" type="xs:string"/>
+            <xs:element name="ReportingPeriod" type="ReportingPeriodType"/>
+            <xs:element name="SubmissionDate" type="xs:date"/>
+            <xs:element name="IsAmendment" type="xs:boolean"/>
+            <xs:element name="OriginalReportReference" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Reporting Period Type -->
+    <xs:complexType name="ReportingPeriodType">
+        <xs:sequence>
+            <xs:element name="Year" type="xs:gYear"/>
+            <xs:element name="Quarter" type="QuarterType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="QuarterType">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- Declarant Type -->
+    <xs:complexType name="DeclarantType">
+        <xs:sequence>
+            <xs:element name="EORINumber" type="xs:string"/>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="Address" type="AddressType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Address Type -->
+    <xs:complexType name="AddressType">
+        <xs:sequence>
+            <xs:element name="Street" type="xs:string"/>
+            <xs:element name="City" type="xs:string"/>
+            <xs:element name="PostalCode" type="xs:string"/>
+            <xs:element name="Country" type="CountryCodeType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="CountryCodeType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Z]{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- Goods List Type -->
+    <xs:complexType name="GoodsListType">
+        <xs:sequence>
+            <xs:element name="Goods" type="GoodsType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Goods Type -->
+    <xs:complexType name="GoodsType">
+        <xs:sequence>
+            <xs:element name="ItemNumber" type="xs:positiveInteger"/>
+            <xs:element name="CNCommodityCode" type="xs:string"/>
+            <xs:element name="CommodityDescription" type="xs:string"/>
+            <xs:element name="CBAMCategory" type="CBAMCategoryType"/>
+            <xs:element name="Quantity" type="QuantityType"/>
+            <xs:element name="CountryOfOrigin" type="CountryCodeType"/>
+            <xs:element name="Producer" type="ProducerType"/>
+            <xs:element name="Emissions" type="EmissionsType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="CBAMCategoryType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="cement"/>
+            <xs:enumeration value="iron_steel"/>
+            <xs:enumeration value="aluminium"/>
+            <xs:enumeration value="fertilizers"/>
+            <xs:enumeration value="hydrogen"/>
+            <xs:enumeration value="electricity"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- Quantity Type -->
+    <xs:complexType name="QuantityType">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:decimal"/>
+            <xs:element name="Unit" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Producer Type -->
+    <xs:complexType name="ProducerType">
+        <xs:sequence>
+            <xs:element name="InstallationId" type="xs:string"/>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="Country" type="CountryCodeType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Emissions Type -->
+    <xs:complexType name="EmissionsType">
+        <xs:sequence>
+            <xs:element name="DirectEmissions" type="EmissionValueType"/>
+            <xs:element name="IndirectEmissions" type="EmissionValueType"/>
+            <xs:element name="CalculationMethod" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="EmissionValueType">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:decimal"/>
+            <xs:element name="Unit" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>

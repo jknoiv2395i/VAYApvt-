@@ -57,7 +57,15 @@ export default function LoginPage() {
                 router.push('/dashboard');
             } else {
                 const errorData = await res.json();
-                setError(errorData.detail || 'Invalid credentials');
+                // Handle Pydantic validation errors (array of {type, loc, msg, input})
+                if (Array.isArray(errorData.detail)) {
+                    const messages = errorData.detail.map((e: { msg?: string }) => e.msg || 'Validation error').join(', ');
+                    setError(messages);
+                } else if (typeof errorData.detail === 'object') {
+                    setError(errorData.detail.msg || 'Invalid credentials');
+                } else {
+                    setError(errorData.detail || 'Invalid credentials');
+                }
             }
         } catch (err) {
             // Demo mode - allow login with demo credentials
