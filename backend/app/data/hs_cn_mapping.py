@@ -185,14 +185,287 @@ FERTILISER_MAPPINGS = {
 
 
 # ============================================================================
+# HYDROGEN (HS Chapter 28)
+# ============================================================================
+
+HYDROGEN_MAPPINGS = {
+    "28041000": {"cn": "28041000", "desc": "Hydrogen", "factor": 9.0},
+    "28042100": {"cn": "28042100", "desc": "Argon", "factor": 1.2},
+    "28042900": {"cn": "28042900", "desc": "Rare gases (other)", "factor": 1.5},
+    "28043000": {"cn": "28043000", "desc": "Nitrogen", "factor": 0.8},
+    "28044000": {"cn": "28044000", "desc": "Oxygen", "factor": 0.6},
+    "28045000": {"cn": "28045000", "desc": "Boron; tellurium", "factor": 3.0},
+    "28046100": {"cn": "28046100", "desc": "Silicon, containing >= 99.99% silicon", "factor": 12.0},
+    "28046900": {"cn": "28046900", "desc": "Silicon (other)", "factor": 10.0},
+    "28047000": {"cn": "28047000", "desc": "Phosphorus", "factor": 8.0},
+    "28048000": {"cn": "28048000", "desc": "Arsenic", "factor": 5.0},
+    "28049000": {"cn": "28049000", "desc": "Selenium", "factor": 4.5},
+}
+
+
+# ============================================================================
+# ELECTRICITY (HS Chapter 27)
+# ============================================================================
+
+ELECTRICITY_MAPPINGS = {
+    "27160000": {"cn": "27160000", "desc": "Electrical energy", "factor": 0.4},
+}
+
+
+# ============================================================================
+# ADDITIONAL IRON & STEEL (Expanded)
+# ============================================================================
+
+IRON_STEEL_EXPANDED = {
+    # Pig iron and spiegeleisen
+    "72011000": {"cn": "72011000", "desc": "Non-alloy pig iron with phosphorus <= 0.5%", "factor": 1.6},
+    "72012000": {"cn": "72012000", "desc": "Non-alloy pig iron with phosphorus > 0.5%", "factor": 1.6},
+    "72015000": {"cn": "72015000", "desc": "Alloy pig iron; spiegeleisen", "factor": 1.7},
+    
+    # Ferroalloys
+    "72021100": {"cn": "72021100", "desc": "Ferromanganese, carbon > 2%", "factor": 2.5},
+    "72021900": {"cn": "72021900", "desc": "Ferromanganese, carbon <= 2%", "factor": 2.5},
+    "72022100": {"cn": "72022100", "desc": "Ferrosilicon, silicon > 55%", "factor": 5.0},
+    "72022900": {"cn": "72022900", "desc": "Ferrosilicon, silicon <= 55%", "factor": 4.5},
+    "72023000": {"cn": "72023000", "desc": "Ferrosilicon manganese", "factor": 3.8},
+    "72024100": {"cn": "72024100", "desc": "Ferrochromium, carbon > 4%", "factor": 3.2},
+    "72024900": {"cn": "72024900", "desc": "Ferrochromium, carbon <= 4%", "factor": 3.2},
+    "72025000": {"cn": "72025000", "desc": "Ferrosilicochromium", "factor": 3.5},
+    "72026000": {"cn": "72026000", "desc": "Ferronickel", "factor": 4.0},
+    "72027000": {"cn": "72027000", "desc": "Ferromolybdenum", "factor": 4.5},
+    "72028000": {"cn": "72028000", "desc": "Ferrotungsten and ferrosilicotungsten", "factor": 5.0},
+    "72029100": {"cn": "72029100", "desc": "Ferrotitanium and ferrosilicotitanium", "factor": 4.0},
+    "72029200": {"cn": "72029200", "desc": "Ferrovanadium", "factor": 4.5},
+    "72029300": {"cn": "72029300", "desc": "Ferroniobium", "factor": 4.2},
+    "72029900": {"cn": "72029900", "desc": "Other ferroalloys", "factor": 3.5},
+    
+    # Remelting scrap ingots
+    "72031000": {"cn": "72031000", "desc": "Iron remelting scrap ingots", "factor": 0.4},
+    "72039000": {"cn": "72039000", "desc": "Other ferrous products from direct reduction", "factor": 1.2},
+    
+    # Granules and powders
+    "72051000": {"cn": "72051000", "desc": "Pig iron, spiegeleisen granules", "factor": 1.5},
+    "72052100": {"cn": "72052100", "desc": "Alloy steel powders", "factor": 2.8},
+    "72052900": {"cn": "72052900", "desc": "Other iron/steel powders", "factor": 2.5},
+    
+    # Ingots and primary forms
+    "72061000": {"cn": "72061000", "desc": "Iron ingots", "factor": 1.7},
+    "72069000": {"cn": "72069000", "desc": "Other iron primary forms", "factor": 1.7},
+    "72071100": {"cn": "72071100", "desc": "Semi-finished iron, rectangular, carbon < 0.25%", "factor": 1.75},
+    "72071200": {"cn": "72071200", "desc": "Semi-finished iron, other, carbon < 0.25%", "factor": 1.75},
+    "72071900": {"cn": "72071900", "desc": "Semi-finished iron, carbon < 0.25%, other", "factor": 1.75},
+    "72072000": {"cn": "72072000", "desc": "Semi-finished iron, carbon >= 0.25%", "factor": 1.8},
+    
+    # Coated steel products
+    "72101100": {"cn": "72101100", "desc": "Flat-rolled tin-plated, >= 0.5mm", "factor": 2.0},
+    "72101200": {"cn": "72101200", "desc": "Flat-rolled tin-plated, < 0.5mm", "factor": 2.0},
+    "72102000": {"cn": "72102000", "desc": "Flat-rolled lead-coated", "factor": 2.1},
+    "72103000": {"cn": "72103000", "desc": "Flat-rolled electrolytically zinc-plated", "factor": 2.05},
+    "72104100": {"cn": "72104100", "desc": "Flat-rolled zinc-plated, corrugated", "factor": 2.05},
+    "72104900": {"cn": "72104900", "desc": "Flat-rolled zinc-plated, other", "factor": 2.05},
+    "72105000": {"cn": "72105000", "desc": "Flat-rolled chromium oxides coated", "factor": 2.1},
+    "72106100": {"cn": "72106100", "desc": "Flat-rolled aluminium-zinc alloy coated", "factor": 2.15},
+    "72106900": {"cn": "72106900", "desc": "Flat-rolled aluminium coated, other", "factor": 2.1},
+    "72107000": {"cn": "72107000", "desc": "Flat-rolled painted/varnished/plastic coated", "factor": 2.2},
+    "72109000": {"cn": "72109000", "desc": "Flat-rolled clad/coated, other", "factor": 2.1},
+    
+    # Rails and railway material
+    "73021000": {"cn": "73021000", "desc": "Rails", "factor": 1.9},
+    "73022000": {"cn": "73022000", "desc": "Sleepers (cross-ties)", "factor": 1.9},
+    "73023000": {"cn": "73023000", "desc": "Switch blades, crossings", "factor": 2.0},
+    "73024000": {"cn": "73024000", "desc": "Fish-plates, sole plates", "factor": 1.9},
+    "73029000": {"cn": "73029000", "desc": "Other railway track material", "factor": 1.9},
+    
+    # Sheet piling and structural shapes
+    "73011000": {"cn": "73011000", "desc": "Sheet piling", "factor": 1.95},
+    "73012100": {"cn": "73012100", "desc": "Angles, shapes, sections", "factor": 1.95},
+    "73012200": {"cn": "73012200", "desc": "T-sections", "factor": 1.95},
+    "73012300": {"cn": "73012300", "desc": "H-sections", "factor": 1.95},
+    "73012400": {"cn": "73012400", "desc": "U-sections", "factor": 1.95},
+    "73012500": {"cn": "73012500", "desc": "I-sections", "factor": 1.95},
+    "73012600": {"cn": "73012600", "desc": "L-sections", "factor": 1.95},
+    "73012900": {"cn": "73012900", "desc": "Other angles, shapes, sections", "factor": 1.95},
+}
+
+
+# ============================================================================
+# ADDITIONAL ALUMINIUM (Expanded)
+# ============================================================================
+
+ALUMINIUM_EXPANDED = {
+    # Aluminium powders and flakes
+    "76031000": {"cn": "76031000", "desc": "Aluminium powders, lamellar structure", "factor": 10.0},
+    "76032000": {"cn": "76032000", "desc": "Aluminium powders, non-lamellar; flakes", "factor": 10.0},
+    
+    # Aluminium containers
+    "76121000": {"cn": "76121000", "desc": "Aluminium collapsible tubular containers", "factor": 9.8},
+    "76129000": {"cn": "76129000", "desc": "Aluminium casks, drums, cans, boxes", "factor": 9.5},
+    
+    # Aluminium stranded wire and cables
+    "76141000": {"cn": "76141000", "desc": "Aluminium stranded wire with steel core", "factor": 9.3},
+    "76149000": {"cn": "76149000", "desc": "Other aluminium stranded wire/cables", "factor": 9.2},
+    
+    # Aluminium articles
+    "76151000": {"cn": "76151000", "desc": "Aluminium table/kitchen articles", "factor": 9.8},
+    "76152000": {"cn": "76152000", "desc": "Aluminium sanitary ware", "factor": 9.8},
+    "76161000": {"cn": "76161000", "desc": "Aluminium nails, tacks, staples", "factor": 9.5},
+    "76169100": {"cn": "76169100", "desc": "Aluminium cloth, grill, netting", "factor": 9.5},
+    "76169900": {"cn": "76169900", "desc": "Other aluminium articles", "factor": 9.5},
+}
+
+
+# ============================================================================
 # COMBINED MAPPING
 # ============================================================================
 
+# Import extended codes (Phase 4.2)
+try:
+    from app.data.cbam_extended_codes import get_all_extended_mappings
+    EXTENDED_MAPPINGS = get_all_extended_mappings()
+except ImportError:
+    EXTENDED_MAPPINGS = {}
+
+# Import downstream manufacturing codes (Phase 4.3)
+try:
+    from app.data.downstream_codes import get_all_downstream_mappings
+    DOWNSTREAM_MAPPINGS = get_all_downstream_mappings()
+except ImportError:
+    DOWNSTREAM_MAPPINGS = {}
+
+# Import agriculture & EUDR codes (Phase 4.4)
+try:
+    from app.data.agriculture_codes import get_all_agriculture_mappings
+    AGRICULTURE_MAPPINGS = get_all_agriculture_mappings()
+except ImportError:
+    AGRICULTURE_MAPPINGS = {}
+
+# Import textiles, leather, pharma, gems codes (Phase 4.4)
+try:
+    from app.data.textiles_pharma_codes import get_all_textiles_pharma_mappings
+    TEXTILES_PHARMA_MAPPINGS = get_all_textiles_pharma_mappings()
+except ImportError:
+    TEXTILES_PHARMA_MAPPINGS = {}
+
+# Import plastics codes (Phase 4.5)
+try:
+    from app.data.plastics_codes import PLASTICS_CODES
+except ImportError:
+    PLASTICS_CODES = {}
+
+# Import machinery codes (Phase 4.5)
+try:
+    from app.data.machinery_codes import MACHINERY_CODES
+except ImportError:
+    MACHINERY_CODES = {}
+
+# Import vehicle codes (Phase 4.5)
+try:
+    from app.data.vehicle_codes import VEHICLE_CODES
+except ImportError:
+    VEHICLE_CODES = {}
+
+# Import chemical codes (Phase 4.6)
+try:
+    from app.data.chemical_codes import CHEMICAL_CODES
+except ImportError:
+    CHEMICAL_CODES = {}
+
+# Import apparel codes (Phase 4.6)
+try:
+    from app.data.apparel_codes import APPAREL_CODES
+except ImportError:
+    APPAREL_CODES = {}
+
+# Import base metal codes (Phase 4.6)
+try:
+    from app.data.base_metal_codes import BASE_METAL_CODES
+except ImportError:
+    BASE_METAL_CODES = {}
+
+# Import instrument codes (Phase 4.6)
+try:
+    from app.data.instrument_codes import INSTRUMENT_CODES
+except ImportError:
+    INSTRUMENT_CODES = {}
+
+# Import Phase 4.7 Expanded Dictionaries
+try:
+    from app.data.agriculture_expanded import AGRICULTURE_EXPANDED
+except ImportError:
+    AGRICULTURE_EXPANDED = {}
+
+try:
+    from app.data.textile_materials import TEXTILE_MATERIALS
+except ImportError:
+    TEXTILE_MATERIALS = {}
+
+try:
+    from app.data.construction_codes import CONSTRUCTION_CODES
+except ImportError:
+    CONSTRUCTION_CODES = {}
+
+try:
+    from app.data.machinery_expanded import MACHINERY_EXPANDED
+except ImportError:
+    MACHINERY_EXPANDED = {}
+
+try:
+    from app.data.sundry_codes import SUNDRY_CODES
+except ImportError:
+    SUNDRY_CODES = {}
+
 ALL_MAPPINGS: Dict[str, Dict] = {}
 ALL_MAPPINGS.update({k: {**v, "category": "iron_steel"} for k, v in IRON_STEEL_MAPPINGS.items()})
+ALL_MAPPINGS.update({k: {**v, "category": "iron_steel"} for k, v in IRON_STEEL_EXPANDED.items()})
 ALL_MAPPINGS.update({k: {**v, "category": "aluminium"} for k, v in ALUMINIUM_MAPPINGS.items()})
+ALL_MAPPINGS.update({k: {**v, "category": "aluminium"} for k, v in ALUMINIUM_EXPANDED.items()})
 ALL_MAPPINGS.update({k: {**v, "category": "cement"} for k, v in CEMENT_MAPPINGS.items()})
 ALL_MAPPINGS.update({k: {**v, "category": "fertilisers"} for k, v in FERTILISER_MAPPINGS.items()})
+ALL_MAPPINGS.update({k: {**v, "category": "hydrogen"} for k, v in HYDROGEN_MAPPINGS.items()})
+ALL_MAPPINGS.update({k: {**v, "category": "electricity"} for k, v in ELECTRICITY_MAPPINGS.items()})
+
+# Add extended CBAM codes (Phase 4.2)
+ALL_MAPPINGS.update(EXTENDED_MAPPINGS)
+
+# Add downstream manufacturing codes (Phase 4.3)
+ALL_MAPPINGS.update(DOWNSTREAM_MAPPINGS)
+
+# Add agriculture & EUDR codes (Phase 4.4)
+ALL_MAPPINGS.update(AGRICULTURE_MAPPINGS)
+
+# Add textiles, leather, pharma, gems codes (Phase 4.4)
+# Add textiles, leather, pharma, gems codes (Phase 4.4)
+ALL_MAPPINGS.update(TEXTILES_PHARMA_MAPPINGS)
+
+# Add plastics codes (Phase 4.5)
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in PLASTICS_CODES.items()})
+
+# Add machinery codes (Phase 4.5)
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in MACHINERY_CODES.items()})
+
+# Add vehicle codes (Phase 4.5)
+# Add vehicle codes (Phase 4.5)
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in VEHICLE_CODES.items()})
+
+# Add chemical codes (Phase 4.6)
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in CHEMICAL_CODES.items()})
+
+# Add apparel codes (Phase 4.6)
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in APPAREL_CODES.items()})
+
+# Add base metal codes (Phase 4.6)
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in BASE_METAL_CODES.items()})
+
+# Add instrument codes (Phase 4.6)
+# Add instrument codes (Phase 4.6)
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in INSTRUMENT_CODES.items()})
+
+# Add Phase 4.7 Expanded Codes
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in AGRICULTURE_EXPANDED.items()})
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in TEXTILE_MATERIALS.items()})
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in CONSTRUCTION_CODES.items()})
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in MACHINERY_EXPANDED.items()})
+ALL_MAPPINGS.update({k: {**v, "factor": 0} for k, v in SUNDRY_CODES.items()})
 
 
 # ============================================================================
@@ -213,6 +486,8 @@ def get_cbam_category(hs_code: str) -> Optional[str]:
     
     # Fallback: detect from HS prefix
     prefix = hs_code[:2] if hs_code else ""
+    prefix4 = hs_code[:4] if len(hs_code) >= 4 else ""
+    
     if prefix in ["72", "73"]:
         return "iron_steel"
     elif prefix == "76":
@@ -220,7 +495,12 @@ def get_cbam_category(hs_code: str) -> Optional[str]:
     elif prefix == "25":
         return "cement"
     elif prefix in ["28", "31"]:
+        # Check if hydrogen (28.04) or fertiliser
+        if prefix4 == "2804":
+            return "hydrogen"
         return "fertilisers"
+    elif prefix == "27":
+        return "electricity"
     return None
 
 

@@ -2,26 +2,14 @@
 HS Code lookup and mapping API endpoints.
 
 Provides search and classification for Indian HS codes to EU CN codes.
+Uses the HSCodeService for data access.
 """
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 from typing import Optional, List
 
-# Import the mapping database
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-
-from app.data.hs_cn_mapping import (
-    get_cn_code,
-    get_cbam_category,
-    get_emission_factor,
-    get_description,
-    search_hs_codes,
-    get_all_hs_codes,
-    ALL_MAPPINGS
-)
+from app.services.hs_code_service import get_static_service
 
 router = APIRouter()
 
@@ -38,6 +26,7 @@ class HSCodeInfo(BaseModel):
     cbam_category: Optional[str]
     emission_factor: float
     is_cbam_covered: bool
+    category: Optional[str] = None
 
 
 class HSCodeSearchResult(BaseModel):
@@ -45,8 +34,9 @@ class HSCodeSearchResult(BaseModel):
     hs_code: str
     cn_code: str
     description: str
-    cbam_category: str
+    cbam_category: Optional[str]
     emission_factor: float
+    category: Optional[str] = None
 
 
 class HSCodeSearchResponse(BaseModel):
@@ -56,12 +46,11 @@ class HSCodeSearchResponse(BaseModel):
     query: str
 
 
-class CBAMCategoryStats(BaseModel):
+class CategoryStats(BaseModel):
     """Stats for a CBAM category."""
     category: str
     display_name: str
-    hs_code_count: int
-    emission_factor_range: str
+    count: int
 
 
 # ============================================================================
@@ -82,18 +71,23 @@ async def lookup_hs_code(hs_code: str):
     # Clean the HS code
     hs_code = hs_code.replace(" ", "").replace(".", "")[:8]
     
-    cn_code = get_cn_code(hs_code)
-    category = get_cbam_category(hs_code)
-    factor = get_emission_factor(hs_code)
-    description = get_description(hs_code)
+    service = get_static_service()
+    result = await service.lookup(hs_code)
+    
+    if not result:
+        raise HTTPException(
+            status_code=404,
+            detail=f"HS code not found: {hs_code}"
+        )
     
     return HSCodeInfo(
         hs_code=hs_code,
-        cn_code=cn_code,
-        description=description,
-        cbam_category=category,
-        emission_factor=factor,
-        is_cbam_covered=category is not None
+        cn_code=result.get("cn_code"),
+        description=result.get("description"),
+        cbam_category=result.get("cbam_category"),
+        emission_factor=result.get("emission_factor", 0),
+        is_cbam_covered=result.get("cbam_category") is not None,
+        category=result.get("category")
     )
 
 
@@ -109,11 +103,24 @@ async def search_hs(
     - q=7219 → All stainless steel flat products
     - q=steel → All products containing 'steel' in description
     - q=aluminium → All aluminium products
+    - q=coffee → All coffee products
     """
-    results = search_hs_codes(q, limit)
+    service = get_static_service()
+    results = await service.search(q, limit)
+    
+    search_results = []
+    for r in results:
+        search_results.append(HSCodeSearchResult(
+            hs_code=r.get("hs_code", ""),
+            cn_code=r.get("cn_code", ""),
+            description=r.get("description", ""),
+            cbam_category=r.get("cbam_category"),
+            emission_factor=r.get("emission_factor", 0),
+            category=r.get("category")
+        ))
     
     return HSCodeSearchResponse(
-        results=[HSCodeSearchResult(**r) for r in results],
+        results=search_results,
         total=len(results),
         query=q
     )
@@ -122,39 +129,42 @@ async def search_hs(
 @router.get("/categories")
 async def get_cbam_categories():
     """
-    Get all CBAM categories with statistics.
+    Get all categories with statistics.
     """
-    categories = {
-        "iron_steel": {"name": "Iron & Steel", "hs_prefix": ["72", "73"]},
-        "aluminium": {"name": "Aluminium", "hs_prefix": ["76"]},
-        "cement": {"name": "Cement", "hs_prefix": ["25"]},
-        "fertilisers": {"name": "Fertilizers", "hs_prefix": ["28", "31"]},
-        "hydrogen": {"name": "Hydrogen", "hs_prefix": ["28"]},
-        "electricity": {"name": "Electricity", "hs_prefix": ["27"]},
+    service = get_static_service()
+    stats = await service.get_category_stats()
+    total = await service.get_count()
+    
+    # Format for response
+    category_names = {
+        "iron_steel": "Iron & Steel",
+        "aluminium": "Aluminium", 
+        "cement": "Cement",
+        "fertilisers": "Fertilizers",
+        "hydrogen": "Hydrogen",
+        "electricity": "Electricity",
+        "textiles": "Textiles",
+        "leather": "Leather",
+        "pharmaceuticals": "Pharmaceuticals",
+        "gems_jewelry": "Gems & Jewelry",
+        "agriculture": "Agriculture",
+        "downstream": "Downstream Mfg",
     }
     
-    # Count codes per category
-    stats = []
-    for cat_key, cat_info in categories.items():
-        count = sum(1 for code, data in ALL_MAPPINGS.items() if data.get("category") == cat_key)
-        factors = [data["factor"] for code, data in ALL_MAPPINGS.items() if data.get("category") == cat_key]
-        
-        if factors:
-            factor_range = f"{min(factors):.1f} - {max(factors):.1f}"
-        else:
-            factor_range = "N/A"
-        
-        stats.append({
-            "category": cat_key,
-            "display_name": cat_info["name"],
-            "hs_prefix": cat_info["hs_prefix"],
-            "hs_code_count": count,
-            "emission_factor_range": factor_range
+    formatted_stats = []
+    for cat, count in stats.items():
+        formatted_stats.append({
+            "category": cat,
+            "display_name": category_names.get(cat, cat.replace("_", " ").title()),
+            "count": count
         })
     
+    # Sort by count descending
+    formatted_stats.sort(key=lambda x: x["count"], reverse=True)
+    
     return {
-        "categories": stats,
-        "total_hs_codes": len(ALL_MAPPINGS)
+        "categories": formatted_stats,
+        "total_hs_codes": total
     }
 
 
@@ -167,14 +177,15 @@ async def get_all_codes(
     """
     Get all HS codes in the database, optionally filtered by category.
     """
-    all_codes = get_all_hs_codes()
-    
-    if category:
-        all_codes = [c for c in all_codes if c["cbam_category"] == category]
+    service = get_static_service()
+    all_codes = await service.get_all(category=category, skip=skip, limit=limit)
+    total = await service.get_count()
     
     return {
-        "codes": all_codes[skip:skip+limit],
-        "total": len(all_codes),
+        "codes": all_codes,
+        "total": total,
+        "skip": skip,
+        "limit": limit,
         "category_filter": category
     }
 
@@ -188,12 +199,16 @@ async def validate_hs_code(hs_code: str):
     """
     hs_code = hs_code.replace(" ", "").replace(".", "")[:8]
     
+    service = get_static_service()
+    result = await service.lookup(hs_code)
+    
     validation = {
         "hs_code": hs_code,
         "valid_format": len(hs_code) >= 6,
         "is_cbam_covered": False,
         "cbam_category": None,
         "cn_code": None,
+        "category": None,
         "warnings": [],
         "recommendations": []
     }
@@ -202,29 +217,46 @@ async def validate_hs_code(hs_code: str):
         validation["warnings"].append("HS code should be at least 6 digits")
         return validation
     
-    cn_code = get_cn_code(hs_code)
-    category = get_cbam_category(hs_code)
-    
-    if cn_code:
-        validation["is_cbam_covered"] = True
-        validation["cbam_category"] = category
-        validation["cn_code"] = cn_code
+    if result:
+        validation["is_cbam_covered"] = result.get("cbam_category") is not None
+        validation["cbam_category"] = result.get("cbam_category")
+        validation["cn_code"] = result.get("cn_code")
+        validation["category"] = result.get("category")
     else:
         # Check if prefix suggests CBAM coverage
         prefix = hs_code[:2]
-        if prefix in ["72", "73"]:
-            validation["warnings"].append("Iron/steel product may be CBAM-covered. Verify specific CN code.")
+        cbam_prefixes = {
+            "72": "Iron/Steel",
+            "73": "Iron/Steel articles",
+            "76": "Aluminium",
+            "25": "Cement",
+            "28": "Hydrogen/Fertilizers",
+            "31": "Fertilizers"
+        }
+        
+        if prefix in cbam_prefixes:
+            validation["warnings"].append(
+                f"{cbam_prefixes[prefix]} product may be CBAM-covered. Verify specific CN code."
+            )
             validation["recommendations"].append("Check EU CBAM goods list for exact classification")
-        elif prefix == "76":
-            validation["warnings"].append("Aluminium product may be CBAM-covered. Verify specific CN code.")
-        elif prefix == "25":
-            validation["warnings"].append("Cement product may be CBAM-covered. Verify specific CN code.")
-        elif prefix in ["28", "31"]:
-            validation["warnings"].append("Fertilizer product may be CBAM-covered. Verify specific CN code.")
         else:
             validation["recommendations"].append("This product does not appear to be CBAM-covered")
     
     return validation
+
+
+@router.get("/count")
+async def get_code_count():
+    """
+    Get total count of HS codes in the library.
+    """
+    service = get_static_service()
+    count = await service.get_count()
+    
+    return {
+        "total_hs_codes": count,
+        "source": "static_library"
+    }
 
 
 @router.get("/emission-factors")
@@ -257,6 +289,12 @@ async def get_default_emission_factors():
                 "range": "1.8 - 2.8",
                 "unit": "kg CO2e per kg product",
                 "note": "Ammonia-based fertilizers have higher emissions"
+            },
+            "hydrogen": {
+                "average": 12.0,
+                "range": "0.5 - 15.0",
+                "unit": "kg CO2e per kg H2",
+                "note": "Green hydrogen has near-zero emissions"
             }
         },
         "eu_carbon_price_eur": 80.0,

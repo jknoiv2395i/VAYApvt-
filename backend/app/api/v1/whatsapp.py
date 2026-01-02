@@ -1,194 +1,158 @@
 """
 WhatsApp Bot Integration via Twilio
 
-Handles incoming WhatsApp messages for:
+Handles incoming WhatsApp messages with chunked, friendly responses for:
 - HS code lookup
 - Trade compliance questions
 - CBAM report status
+
+Phone: +91 80 4567 8900
 """
 
 from fastapi import APIRouter, Form, Request, Response
-from typing import Optional
-import httpx
+from typing import Optional, List
 
 from app.core.config import settings
-from app.services.gemini_service import get_gemini_service
+from app.services.openrouter_service import get_openrouter_service
+from app.services.whatsapp_agent import (
+    chunk_message,
+    get_welcome_chunks,
+    get_help_chunks,
+    get_quote_chunks,
+    get_agent_chunks,
+    get_confused_chunks,
+    format_hs_results_chunks,
+    format_trade_answer_chunks,
+    SUPPORT_NUMBER
+)
+from app.data.hs_cn_mapping import search_hs_codes
 
 router = APIRouter()
 
 
-def send_whatsapp_reply(to: str, message: str) -> bool:
-    """Send a WhatsApp message via Twilio."""
-    if not all([settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, settings.TWILIO_WHATSAPP_NUMBER]):
-        return False
-    
-    url = f"https://api.twilio.com/2010-04-01/Accounts/{settings.TWILIO_ACCOUNT_SID}/Messages.json"
-    
-    # Sync request for simplicity in webhook context
-    import requests
-    response = requests.post(
-        url,
-        auth=(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN),
-        data={
-            "From": f"whatsapp:{settings.TWILIO_WHATSAPP_NUMBER}",
-            "To": to,
-            "Body": message
-        }
-    )
-    return response.status_code == 201
-
-
-def format_hs_code_response(suggestions: list) -> str:
-    """Format HS code suggestions for WhatsApp."""
-    if not suggestions:
-        return "❌ No matching HS codes found. Try a different description."
-    
-    response = "🔍 *HS Code Suggestions*\n\n"
-    for i, s in enumerate(suggestions, 1):
-        cbam = "⚠️ CBAM" if s.get("cbam_category") else "✅ No CBAM"
-        response += f"{i}. *{s['hs_code']}*\n"
-        response += f"   {s['description']}\n"
-        response += f"   Confidence: {s['confidence']} | {cbam}\n\n"
-    
-    response += "_Reply with the HS code number for more details_"
-    return response
-
-
-async def handle_hs_lookup(query: str) -> str:
-    """Handle HS code lookup request."""
+async def handle_hs_lookup(query: str) -> List[str]:
+    """Handle HS code lookup - returns chunked messages."""
     try:
-        service = get_gemini_service()
-        result = await service.match_hs_code(query)
-        suggestions = result.get("suggestions", [])
-        return format_hs_code_response(suggestions)
+        # First try local database
+        local_results = search_hs_codes(query, limit=5)
+        suggestions = []
+        
+        for r in local_results:
+            suggestions.append({
+                "hs_code": r["hs_code"],
+                "description": r["description"],
+                "confidence": "high" if query.lower() in r["description"].lower() else "medium",
+                "cbam_category": r.get("cbam_category")
+            })
+        
+        # Try AI enhancement
+        try:
+            service = get_openrouter_service()
+            result = await service.match_hs_code(query)
+            ai_suggestions = result.get("suggestions", [])
+            existing_codes = [s["hs_code"] for s in suggestions]
+            
+            for s in ai_suggestions:
+                if s.get("hs_code") and s["hs_code"] not in existing_codes:
+                    suggestions.append(s)
+        except Exception:
+            pass  # AI failed, but we have local results
+        
+        return format_hs_results_chunks(suggestions)
     except Exception as e:
-        return f"⚠️ Error looking up HS code: {str(e)}"
+        return ["Oops, something went wrong 😅", f"Error: {str(e)}", "Try again?"]
 
 
-async def handle_trade_question(question: str) -> str:
-    """Handle trade compliance question."""
+async def handle_trade_question(question: str) -> List[str]:
+    """Handle trade compliance question - returns chunked messages."""
     try:
-        service = get_gemini_service()
+        service = get_openrouter_service()
         answer = await service.answer_trade_query(question)
-        return f"💡 *VAYA Assistant*\n\n{answer}"
+        return format_trade_answer_chunks(answer)
     except Exception as e:
-        return f"⚠️ Error: {str(e)}"
+        return [
+            "Sorry, having trouble with that question 😅",
+            "Try asking something simpler, or type 'agent' for human help!"
+        ]
 
 
-def get_welcome_message() -> str:
-    """Return welcome message for new users."""
-    return """👋 *Welcome to VAYA!*
-
-I'm your AI assistant for EU trade compliance.
-
-*What I can help with:*
-• 🔍 HS Code Lookup - Send product name
-• 📋 CBAM Questions - Ask about carbon reporting
-• 🌳 EUDR Guidance - Deforestation compliance
-
-*Quick Commands:*
-• Send "HS: steel screw" for HS code lookup
-• Send "CBAM: what is it?" for CBAM info
-• Send "help" for full menu
-
-_Powered by VAYA - Trade Compliance Made Simple_"""
-
-
-def get_help_message() -> str:
-    """Return help menu."""
-    return """📚 *VAYA Help Menu*
-
-*HS Code Lookup*
-Send: `HS: [product description]`
-Example: `HS: galvanized steel sheet`
-
-*Trade Questions*
-Send: `Q: [your question]`
-Example: `Q: Is cement covered by CBAM?`
-
-*CBAM Information*
-Send: `CBAM: [topic]`
-Example: `CBAM: reporting requirements`
-
-*Get a Quote*
-Send: `quote` to get CBAM report pricing
-
-*Need Human Help?*
-Send: `agent` to connect with support
-
-_Visit vaya.trade for full features_"""
-
-
-async def process_message(body: str, from_number: str) -> str:
-    """Process incoming message and return response."""
+async def process_message(body: str, from_number: str) -> List[str]:
+    """
+    Process incoming message and return chunked response.
+    
+    Returns a list of short, friendly messages to send.
+    """
     body = body.strip()
     body_lower = body.lower()
     
-    # Welcome/start
-    if body_lower in ["hi", "hello", "start", "hey"]:
-        return get_welcome_message()
+    # === GREETINGS ===
+    if body_lower in ["hi", "hello", "start", "hey", "hii", "hola", "namaste"]:
+        return get_welcome_chunks()
     
-    # Help
-    if body_lower in ["help", "menu", "?"]:
-        return get_help_message()
+    # === HELP ===
+    if body_lower in ["help", "menu", "?", "options"]:
+        return get_help_chunks()
     
-    # HS Code lookup
+    # === HS CODE LOOKUP ===
     if body_lower.startswith("hs:") or body_lower.startswith("hs "):
         query = body[3:].strip() if body_lower.startswith("hs:") else body[2:].strip()
-        return await handle_hs_lookup(query)
+        if query:
+            return await handle_hs_lookup(query)
+        return ["What product do you need the HS code for?", "Try: HS: steel bolts"]
     
-    # Trade question
+    # === TRADE QUESTIONS ===
     if body_lower.startswith("q:") or body_lower.startswith("question:"):
         question = body.split(":", 1)[1].strip()
-        return await handle_trade_question(question)
+        if question:
+            return await handle_trade_question(question)
+        return ["What's your question?", "Try: Q: What is CBAM?"]
     
-    # CBAM specific
+    # === CBAM SPECIFIC ===
     if body_lower.startswith("cbam:") or body_lower.startswith("cbam "):
         topic = body[5:].strip() if body_lower.startswith("cbam:") else body[4:].strip()
-        return await handle_trade_question(f"CBAM (Carbon Border Adjustment Mechanism): {topic}")
+        if topic:
+            return await handle_trade_question(f"About EU CBAM (Carbon Border Adjustment Mechanism): {topic}")
+        return ["What about CBAM?", "Try: CBAM: deadlines 2025"]
     
-    # Quote request
-    if body_lower in ["quote", "price", "pricing", "cost"]:
-        return """💰 *VAYA Pricing*
-
-*CBAM Report Generation*
-₹499 per report
-• AI-powered invoice extraction
-• Automatic emission calculations
-• XML file ready for EU portal
-
-*Bulk Packages*
-• 10 reports: ₹4,490 (10% off)
-• 50 reports: ₹19,960 (20% off)
-• Unlimited: Contact sales
-
-*Free Features*
-• HS Code Lookup ✓
-• Trade Questions ✓
-• CBAM Guidance ✓
-
-Reply `start` to generate your first report!"""
-
-    # Agent request
-    if body_lower in ["agent", "human", "support", "help me"]:
-        return """🙋 *Connect with Support*
-
-Our team is available:
-Mon-Fri: 9 AM - 6 PM IST
-
-📧 Email: support@vaya.trade
-📞 Phone: +91-XXXXXXXXXX
-
-_Average response time: 2 hours_
-
-Or describe your issue here and we'll get back to you!"""
-
-    # Default: Try to understand as HS code or question
+    # === PRICING ===
+    if body_lower in ["quote", "price", "pricing", "cost", "rates"]:
+        return get_quote_chunks()
+    
+    # === HUMAN SUPPORT ===
+    if body_lower in ["agent", "human", "support", "help me", "talk to someone"]:
+        return get_agent_chunks()
+    
+    # === THANKS ===
+    if body_lower in ["thanks", "thank you", "thx", "ty"]:
+        return ["Happy to help! 😊", "Anything else you need?"]
+    
+    # === BYE ===
+    if body_lower in ["bye", "goodbye", "see you", "later"]:
+        return ["See you! 👋", "Come back anytime you need help with trade compliance!"]
+    
+    # === DEFAULT: Try as HS lookup if long enough ===
     if len(body) > 3:
-        # Assume it's a product for HS lookup
         return await handle_hs_lookup(body)
     
-    return "❓ I didn't understand that. Send `help` for available commands."
+    return get_confused_chunks()
+
+
+def build_twiml_response(messages: List[str]) -> str:
+    """Build TwiML response with multiple messages."""
+    # For TwiML, we need to combine messages since Twilio
+    # only supports one Message per response in webhook mode
+    # But we format it nicely with line breaks
+    combined = "\n\n".join(messages)
+    
+    # Escape XML special characters
+    combined = combined.replace("&", "&amp;")
+    combined = combined.replace("<", "&lt;")
+    combined = combined.replace(">", "&gt;")
+    
+    return f'''<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Message>{combined}</Message>
+</Response>'''
 
 
 @router.post("/webhook")
@@ -202,17 +166,16 @@ async def whatsapp_webhook(
     """
     Twilio WhatsApp webhook endpoint.
     
-    Receives incoming messages and sends automated responses.
+    Receives incoming messages and sends friendly, chunked responses.
     Configure this URL in Twilio Console: https://console.twilio.com
+    
+    Webhook URL: https://your-domain.com/api/v1/whatsapp/webhook
     """
     # Process message
-    response_text = await process_message(Body, From)
+    response_messages = await process_message(Body, From)
     
-    # Return TwiML response
-    twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Message>{response_text}</Message>
-</Response>"""
+    # Build TwiML response
+    twiml = build_twiml_response(response_messages)
     
     return Response(content=twiml, media_type="application/xml")
 
@@ -220,4 +183,25 @@ async def whatsapp_webhook(
 @router.get("/webhook")
 async def verify_webhook(request: Request):
     """Verify webhook endpoint for Twilio setup."""
-    return {"status": "ok", "message": "VAYA WhatsApp webhook is active"}
+    return {
+        "status": "ok", 
+        "message": "VAYA WhatsApp bot is active 🚀",
+        "phone": SUPPORT_NUMBER,
+        "commands": ["HS: [product]", "CBAM: [question]", "help", "quote"]
+    }
+
+
+@router.post("/test")
+async def test_message(body: str = Form("")):
+    """
+    Test endpoint for local development.
+    
+    Use this to test bot responses without Twilio.
+    """
+    messages = await process_message(body, "test:+919999999999")
+    return {
+        "input": body,
+        "responses": messages,
+        "chunk_count": len(messages)
+    }
+

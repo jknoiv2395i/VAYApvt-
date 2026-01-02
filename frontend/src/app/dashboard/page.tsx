@@ -64,12 +64,19 @@ export default function DashboardPage() {
     const [unlocked, setUnlocked] = useState(false);
 
     useEffect(() => {
-        // Check if already unlocked via passkey or authenticated
-        const isUnlocked = localStorage.getItem("vaya_unlocked") === "true";
-        if (isUnlocked) {
-            setUnlocked(true);
-        } else if (!isAuthenticated) {
-            setShowPasskeyOverlay(true);
+        // AUTO-UNLOCK: Skip passkey for development
+        // Set unlocked state immediately
+        localStorage.setItem("vaya_unlocked", "true");
+        setUnlocked(true);
+
+        // Auto-set demo user if not authenticated
+        if (!isAuthenticated) {
+            setUser({
+                id: "demo",
+                email: "demo@vaya.trade",
+                full_name: "Demo User",
+                subscription_tier: "pro"
+            });
         }
 
         // Fetch stats
@@ -77,7 +84,7 @@ export default function DashboardPage() {
             .then(res => res.json())
             .then(data => setRecentReports(data.total || 0))
             .catch(() => { });
-    }, [isAuthenticated]);
+    }, [isAuthenticated, setUser]);
 
     const handlePasskeySubmit = (e: React.FormEvent) => {
         e.preventDefault();

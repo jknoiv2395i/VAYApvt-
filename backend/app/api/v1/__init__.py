@@ -7,13 +7,16 @@ from app.api.v1.whatsapp import router as whatsapp_router
 from app.api.v1.documents import router as documents_router
 from app.api.v1.cbam import router as cbam_router
 from app.api.v1.cbam_engine import router as cbam_engine_router
+from app.api.v1.eudr import router as eudr_router
 
 api_router = APIRouter(prefix="/api/v1")
 
 api_router.include_router(auth_router)
-api_router.include_router(hs_codes_router)
+api_router.include_router(hs_codes_router, prefix="/hs-codes", tags=["HS Codes"])
 api_router.include_router(ai_router, prefix="/ai", tags=["AI"])
 api_router.include_router(whatsapp_router, prefix="/whatsapp", tags=["WhatsApp"])
 api_router.include_router(documents_router, prefix="/documents", tags=["Documents"])
 api_router.include_router(cbam_router, prefix="/cbam", tags=["CBAM Reports"])
 api_router.include_router(cbam_engine_router)  # CBAM ML Engine
+api_router.include_router(eudr_router, prefix="/eudr", tags=["EUDR Compliance"])
+

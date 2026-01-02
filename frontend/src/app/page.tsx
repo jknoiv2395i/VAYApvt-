@@ -1,641 +1,771 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import {
-  Search,
-  FileText,
-  Shield,
-  Globe,
   ArrowRight,
   Sparkles,
-  Check,
   Zap,
-  Bot,
+  Globe,
   Upload,
   Factory,
-  Leaf,
   MessageCircle,
-  ChevronRight,
-  Star,
   Play,
-  ChevronDown,
-  Building2,
-  FileCode,
-  Database,
-  Users,
-  Award,
-  Lock,
-  Target,
-  Calculator,
-  TrendingUp,
-  BarChart3,
-  Layers,
-  RefreshCw,
-  Eye,
+  Check,
+  Menu,
+  X,
+  Bot,
   Mail,
+  Calendar,
+  Database,
+  Search,
+  BarChart,
+  Shield,
   Phone,
-  MapPin
+  Link2,
+  Users,
+  Target,
+  LineChart,
+  Smile,
+  Star,
+  CheckCircle2,
+  Plus,
+  Minus,
+  ChevronDown,
+  Briefcase,
+  Layers,
+  GripVertical
 } from "lucide-react";
-import { Component as EtherealShadow } from "@/components/ui/etheral-shadow";
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentWord, setCurrentWord] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-  const [activeFeature, setActiveFeature] = useState(0);
-  const words = ["Simple", "Fast", "Accurate", "Compliant"];
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
-    setIsVisible(true);
-    const interval = setInterval(() => {
-      setCurrentWord((prev) => (prev + 1) % words.length);
-    }, 2000);
-    return () => clearInterval(interval);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature((prev) => (prev + 1) % 4);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleSearch = () => {
-    if (searchQuery) {
-      window.location.href = `/dashboard?search=${encodeURIComponent(searchQuery)}`;
-    } else {
-      window.location.href = '/dashboard';
-    }
-  };
-
-  const mainFeatures = [
-    {
-      id: 'cbam',
-      icon: Factory,
-      title: 'CBAM Reporting',
-      subtitle: 'EU Carbon Border Adjustment',
-      description: 'Generate EU-compliant XML reports for carbon border adjustment mechanism.',
-      screenshot: '/cbam-dashboard.png',
-      color: 'emerald',
-      link: '/cbam',
-      stats: [
-        { label: 'Report Time', value: '<5 min' },
-        { label: 'Accuracy', value: '99.5%' },
-        { label: 'Carbon Price', value: '€93/t' },
-      ],
-      features: ['AI HS Code Classification', 'Emissions Calculator', 'Multi-Invoice Merge', 'Status Workflow']
-    },
-    {
-      id: 'advisor',
-      icon: Bot,
-      title: 'AI Trade Advisor',
-      subtitle: 'Intelligent Trade Assistant',
-      description: 'Ask any trade compliance question in natural language.',
-      screenshot: '/cbam-modal.png',
-      color: 'violet',
-      link: '/advisor',
-      stats: [
-        { label: 'Response Time', value: '<3 sec' },
-        { label: 'Knowledge Base', value: '50K+ docs' },
-        { label: 'Languages', value: '5+' },
-      ],
-      features: ['Natural Language Q&A', 'HS Code Suggestions', 'Duty Rate Lookup', 'Compliance Guidance']
-    },
-    {
-      id: 'documents',
-      icon: Upload,
-      title: 'Smart Document Processing',
-      subtitle: 'AI-Powered Extraction',
-      description: 'Upload invoices and let AI extract HS codes, quantities, and values.',
-      screenshot: '/cbam-xml.png',
-      color: 'amber',
-      link: '/documents',
-      stats: [
-        { label: 'Extraction Time', value: '<10 sec' },
-        { label: 'Supported Formats', value: 'PDF, IMG' },
-        { label: 'Fields Extracted', value: '15+' },
-      ],
-      features: ['PDF/Image Upload', 'Auto HS Detection', 'Data Validation', 'CBAM Integration']
-    },
-    {
-      id: 'hscode',
-      icon: Search,
-      title: 'HS Code Intelligence',
-      subtitle: 'Smart Classification',
-      description: 'Search 15,000+ HS codes with AI classification.',
-      screenshot: '/cbam-dashboard.png',
-      color: 'cyan',
-      link: '/dashboard',
-      stats: [
-        { label: 'HS Codes', value: '15K+' },
-        { label: 'Accuracy', value: '99%' },
-        { label: 'Countries', value: '180+' },
-      ],
-      features: ['Natural Language Search', 'Duty Calculators', 'FTA Analysis', 'Export Controls']
-    },
-  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
-      {/* Hero Section with Ethereal Shadow */}
-      <section className="relative h-screen flex flex-col justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <EtherealShadow
-            color="rgba(16, 185, 129, 0.8)"
-            animation={{ scale: 100, speed: 90 }}
-            noise={{ opacity: 1, scale: 1.2 }}
-            sizing="fill"
-          />
-          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px]" />
-        </div>
+    <div className="min-h-screen bg-[#080808] text-[#FAFAFA] font-sans overflow-x-hidden selection:bg-[#FF5100] selection:text-white">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0 w-full h-[120vh] pointer-events-none">
+        <Image
+          src="/hero-new-bg.jpg"
+          alt="Hero Background"
+          fill
+          className="object-cover object-top opacity-100"
+          priority
+        />
+        {/* Overlay to ensure text readability if needed, matching the user's black gradient hint if transparency exists, but usually the image carries the look */}
+        <div className="absolute inset-0 bg-black/10" />
+      </div>
 
-        {/* Navigation */}
-        <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                  <span className="text-white font-bold text-lg">V</span>
-                </div>
-                <span className="text-white font-bold text-xl tracking-tight">VAYA</span>
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 pt-6 transition-all duration-300">
+        <div className="max-w-[1350px] mx-auto px-6">
+          <div className="flex items-center justify-between h-[57px] rounded-full bg-[#080808]/40 border border-white/5 backdrop-blur-xl px-2 pl-6 shadow-lg shadow-black/20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 pr-8">
+              <div className="w-[21px] h-[21px] flex items-center justify-center">
+                <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M3.36 10.5C3.36 7.09191 5.68743 4.23444 8.82 3.4692V0C3.81969 0.81438 0 5.20548 0 10.5C0 15.7945 3.81969 20.1856 8.82 21V17.5308C5.68743 16.7656 3.36 13.9081 3.36 10.5ZM21 10.5C21 15.7945 17.1803 20.1856 12.18 21V17.5308C15.3128 16.7656 17.64 13.9081 17.64 10.5C17.64 7.09191 15.3128 4.23444 12.18 3.4692V0C17.1803 0.81438 21 5.20548 21 10.5Z" fill="white" />
+                </svg>
               </div>
-              <div className="hidden md:flex items-center gap-8">
-                <a href="#features" className="text-gray-400 hover:text-white transition-colors text-sm">Features</a>
-                <a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors text-sm">How It Works</a>
-                <a href="#pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</a>
-                <Link href="/cbam-features" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1">
-                  <Factory className="w-4 h-4" /> CBAM
-                </Link>
-                <Link href="/advisor" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1">
-                  <Bot className="w-4 h-4" /> AI Advisor
-                </Link>
-              </div>
-              <div className="flex items-center gap-3">
-                <Link href="/login" className="text-gray-400 hover:text-white transition-colors text-sm hidden sm:block">Login</Link>
+              <span className="font-semibold text-[19px] tracking-tight text-[#FAFAFA]">Genesy</span>
+            </Link>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center justify-center flex-1 gap-1">
+              {[
+                "Services",
+                "Case Studies",
+                "Process",
+                "Metrix",
+                "Pricing",
+                "Reviews",
+                "Team",
+                "FAQs"
+              ].map((item) => (
                 <Link
-                  href="/dashboard"
-                  className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25 flex items-center gap-2"
+                  key={item}
+                  href={`#${item.toLowerCase().replace(" ", "-")}`}
+                  className="px-4 py-2 text-[14px] font-bold text-[#FAFAFA] hover:text-[#FF5100] transition-colors"
                 >
-                  Get Started
-                  <ArrowRight className="w-4 h-4" />
+                  {item}
                 </Link>
+              ))}
+            </div>
+
+            {/* CTA Button */}
+            <div className="hidden md:block pl-8">
+              <Link
+                href="/book-call"
+                className="group relative flex items-center justify-center w-[169px] h-[46px] rounded-full bg-[#0F0F0F] border border-white/5 overflow-hidden"
+              >
+                {/* Gradient Background */}
+                <div className="absolute inset-0 bg-[radial-gradient(50%_42.6%_at_50%_100%,_#FF5100_0%,_rgba(255,81,0,0.00)_100%)] opacity-80" />
+
+                {/* Text Content */}
+                <span className="relative z-10 text-[16px] font-semibold bg-gradient-to-r from-[#FF5100] to-[#FAFAFA] bg-clip-text text-transparent group-hover:to-white transition-all">
+                  Book a free call
+                </span>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 text-white/80"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <main className="relative z-10 pt-32 pb-20">
+        {/* Hero Section */}
+        <section className="relative px-6 max-w-7xl mx-auto flex flex-col items-center justify-center text-center min-h-[75vh] pt-32 pb-16">
+          {/* Status Badge */}
+          <div className="mb-10 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0F0F0F] border border-white/5 mx-auto hover:border-[#FF5100]/30 transition-colors cursor-default backdrop-blur-sm" style={{ position: 'absolute', top: '-267px' }}>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF5100] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF5100]"></span>
+            </span>
+            <span className="text-[12px] font-semibold tracking-wide text-[#999999] group-hover:text-white transition-colors">
+              Available for Work
+            </span>
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-6xl md:text-8xl lg:text-[88px] font-bold tracking-[-0.02em] leading-[1.1] mb-8 mx-auto max-w-6xl" style={{ position: 'absolute', top: '38px' }}>
+            Build Smarter <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5100] via-[#FF8F00] to-[#FF5100] animate-gradient-x bg-[length:200%_auto]">
+              Growth With AI
+            </span>
+          </h1>
+
+          {/* Subheadline */}
+          <p className="text-base md:text-lg text-[#999999] max-w-2xl mx-auto mb-12 font-medium" style={{ position: 'absolute', top: '237px' }}>
+            Supercharge your workflow with AI automation.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row items-center gap-6" style={{ position: 'absolute', top: '282px' }}>
+            <Link
+              href="/pricing"
+              className="px-8 py-4 rounded-full bg-[#0F0F0F] border border-white/5 text-[#FF5100] font-semibold hover:border-[#FF5100]/50 transition-all duration-300"
+            >
+              See our pricing
+            </Link>
+
+            <Link
+              href="/book-call"
+              className="group relative px-8 py-4 rounded-full bg-[#0F0F0F] border border-white/5 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(50%_42.6%_at_50%_100%,_#FF5100_0%,_rgba(255,81,0,0.00)_100%)] opacity-80" />
+              <span className="relative z-10 font-semibold bg-gradient-to-r from-[#FF5100] to-[#FAFAFA] bg-clip-text text-transparent group-hover:to-white transition-all">
+                Book a free call
+              </span>
+            </Link>
+          </div>
+        </section>
+
+        {/* Marquee/Ticker Section */}
+        <section className="relative w-full py-20 overflow-hidden border-t border-white/5 bg-[#080808]">
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10" />
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#080808] to-transparent z-10" />
+
+          <div className="flex flex-col gap-6">
+            {/* Row 1 */}
+            <div className="flex gap-6 animate-scroll whitespace-nowrap min-w-full hover:[animation-play-state:paused]">
+              <div className="flex gap-6">
+                <TickerItem
+                  icon={<Bot className="w-5 h-5 text-white" />}
+                  title="Lead Qualification Bot"
+                  stat="38% Conversion increased"
+                />
+                <TickerItem
+                  icon={<MessageCircle className="w-5 h-5 text-white" />}
+                  title="Voice Support Assistant"
+                  stat="2X recurring revenue"
+                />
+                <TickerItem
+                  icon={<Search className="w-5 h-5 text-white" />}
+                  title="RAG Knowledge Search"
+                  stat="25% Conversion increased"
+                />
+                <TickerItem
+                  icon={<BarChart className="w-5 h-5 text-white" />}
+                  title="Post-Call Analytics"
+                  stat="3X faster feedback loops"
+                />
+              </div>
+              {/* Duplicate for smooth scroll */}
+              <div className="flex gap-6">
+                <TickerItem
+                  icon={<Bot className="w-5 h-5 text-white" />}
+                  title="Lead Qualification Bot"
+                  stat="38% Conversion increased"
+                />
+                <TickerItem
+                  icon={<MessageCircle className="w-5 h-5 text-white" />}
+                  title="Voice Support Assistant"
+                  stat="2X recurring revenue"
+                />
+                <TickerItem
+                  icon={<Search className="w-5 h-5 text-white" />}
+                  title="RAG Knowledge Search"
+                  stat="25% Conversion increased"
+                />
+                <TickerItem
+                  icon={<BarChart className="w-5 h-5 text-white" />}
+                  title="Post-Call Analytics"
+                  stat="3X faster feedback loops"
+                />
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="flex gap-6 animate-scroll-reverse whitespace-nowrap min-w-full hover:[animation-play-state:paused]">
+              <div className="flex gap-6">
+                <TickerItem
+                  icon={<CheckCircle2 className="w-5 h-5 text-white" />}
+                  title="Payment Recovery Nudges"
+                  stat="57% Conversion increased"
+                />
+                <TickerItem
+                  icon={<Database className="w-5 h-5 text-white" />}
+                  title="Data Cleanup & Sync"
+                  stat="22% churn rate decreased"
+                />
+                <TickerItem
+                  icon={<Mail className="w-5 h-5 text-white" />}
+                  title="Sales Email Drafter"
+                  stat="45% churn rate decreased"
+                />
+                <TickerItem
+                  icon={<Calendar className="w-5 h-5 text-white" />}
+                  title="Booking Concierge"
+                  stat="1.5X recurring revenue"
+                />
+              </div>
+              {/* Duplicate for smooth scroll */}
+              <div className="flex gap-6">
+                <TickerItem
+                  icon={<CheckCircle2 className="w-5 h-5 text-white" />}
+                  title="Payment Recovery Nudges"
+                  stat="57% Conversion increased"
+                />
+                <TickerItem
+                  icon={<Database className="w-5 h-5 text-white" />}
+                  title="Data Cleanup & Sync"
+                  stat="22% churn rate decreased"
+                />
+                <TickerItem
+                  icon={<Mail className="w-5 h-5 text-white" />}
+                  title="Sales Email Drafter"
+                  stat="45% churn rate decreased"
+                />
+                <TickerItem
+                  icon={<Calendar className="w-5 h-5 text-white" />}
+                  title="Booking Concierge"
+                  stat="1.5X recurring revenue"
+                />
               </div>
             </div>
           </div>
-        </nav>
+        </section>
 
-        {/* Hero Content */}
-        <div className="relative pt-28 pb-16 px-4 z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              {/* Badges */}
-              <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-sm text-gray-300">Trusted by 500+ Indian Exporters</span>
-                </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                  <Shield className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-xs text-emerald-400 font-medium">EU CBAM Ready</span>
-                </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full">
-                  <Leaf className="w-3.5 h-3.5 text-violet-400" />
-                  <span className="text-xs text-violet-400 font-medium">EUDR Compliant</span>
-                </div>
-              </div>
-
-              {/* Headline */}
-              <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                Trade Compliance <br />
-                <span className="relative">
-                  Made{" "}
-                  <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent transition-all duration-500">
-                    {words[currentWord]}
-                  </span>
-                </span>
-              </h1>
-
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-10">
-                The complete platform for <span className="text-emerald-400 font-medium">EU CBAM</span>,{" "}
-                <span className="text-violet-400 font-medium">EUDR</span>, and trade compliance.
-                AI-powered HS code lookup, carbon reporting, and smart document processing for Indian exporters.
+        {/* Services / Bento Grid Section */}
+        <section id="solutions" className="px-6 max-w-7xl mx-auto py-24">
+          <div className="mb-16">
+            <span className="text-[#FF5100] font-semibold tracking-wider text-sm uppercase mb-2 block">
+              // Services
+            </span>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+                AI Solutions
+              </h2>
+              <p className="text-[#999999] max-w-md text-lg leading-relaxed">
+                From automation to advanced analytics, we bring your vision to life with custom AI.
               </p>
+            </div>
+          </div>
 
-              {/* Search Box */}
-              <div className="max-w-2xl mx-auto mb-12">
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl opacity-20 group-hover:opacity-40 blur transition-all" />
-                  <div className="relative flex items-center bg-slate-900/80 border border-white/10 rounded-xl overflow-hidden">
-                    <Search className="absolute left-5 text-gray-500 w-5 h-5" />
-                    <input
-                      type="text"
-                      placeholder="Search HS Code or describe your product..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                      className="w-full pl-14 pr-36 py-5 bg-transparent text-white placeholder-gray-500 focus:outline-none text-lg"
-                    />
-                    <button
-                      onClick={handleSearch}
-                      className="absolute right-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-teal-700 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/25"
-                    >
-                      <Sparkles className="w-4 h-4" />
-                      Search
-                    </button>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Main Card 1: Chatbot */}
+            <div className="lg:col-span-2 group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden min-h-[400px]">
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500">
+                  <MessageCircle className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex flex-wrap gap-2 justify-center mt-4">
-                  <span className="text-sm text-gray-500">Popular:</span>
-                  {["73181500", "Steel Sheet", "Aluminium foil", "Cement"].map((term) => (
-                    <button
-                      key={term}
-                      onClick={() => setSearchQuery(term)}
-                      className="px-3 py-1 text-sm bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 hover:text-white transition-colors"
-                    >
-                      {term}
-                    </button>
-                  ))}
+
+                <div>
+                  <h3 className="text-3xl font-semibold text-white mb-3">Chatbot Development</h3>
+                  <p className="text-[#999999] text-lg">
+                    We build custom AI chat for instant support and streamlined operations.
+                  </p>
+                </div>
+
+                {/* Simulated Ticker/Features inside card */}
+                <div className="mt-8 flex gap-3 overflow-hidden opacity-50 text-xs font-mono text-white/40">
+                  <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-white/5">PLAN</div>
+                  <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-white/5">ANALYZE</div>
+                  <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-white/5">FORECAST</div>
                 </div>
               </div>
 
-              {/* Quick Action Buttons */}
-              <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
-                <Link href="/cbam" className="flex items-center gap-2 px-6 py-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/20 transition-all">
-                  <Factory className="w-5 h-5" /> Create CBAM Report
-                </Link>
-                <Link href="/advisor" className="flex items-center gap-2 px-6 py-3 bg-violet-500/10 border border-violet-500/30 text-violet-400 rounded-xl hover:bg-violet-500/20 transition-all">
-                  <Bot className="w-5 h-5" /> Ask AI Advisor
-                </Link>
-                <Link href="/documents" className="flex items-center gap-2 px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl hover:bg-amber-500/20 transition-all">
-                  <Upload className="w-5 h-5" /> Upload Invoice
-                </Link>
-              </div>
+              {/* Graduate Effect */}
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#FF5100] opacity-[0.03] blur-[100px] group-hover:opacity-[0.08] transition-opacity" />
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
+            {/* Side Card: Tools */}
+            <div className="group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden min-h-[400px]">
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5">
+                    <Zap className="w-6 h-6 text-[#FF5100]" />
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5">
+                    <Link2 className="w-6 h-6 text-[#FF5100]" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-semibold text-white mb-3">Tools Integrations</h3>
+                  <p className="text-[#999999]">
+                    We plug AI into your software, CRM systems, and marketing touchpoints.
+                  </p>
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#FF5100]/5 to-transparent pointer-events-none" />
+            </div>
+
+            {/* Wide Card 2: Reporting */}
+            <div className="lg:col-span-3 group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5 mb-8">
+                    <BarChart className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-semibold text-white mb-4">CBAM Reporting Engine</h3>
+                  <p className="text-[#999999] text-lg mb-8">
+                    Automate your carbon reporting with our intelligent XML generation and validation engine.
+                    Certified for EU compliance.
+                  </p>
+                  <div className="flex gap-4">
+                    <FeatureBadge icon={<Check className="w-3 h-3" />} text="XML Generation" />
+                    <FeatureBadge icon={<Check className="w-3 h-3" />} text="Validation" />
+                    <FeatureBadge icon={<Check className="w-3 h-3" />} text="Archives" />
+                  </div>
+                </div>
+                <div className="relative h-[300px] rounded-2xl bg-[#080808] border border-white/5 p-6 overflow-hidden">
+                  {/* Abstract Visual Rep of Reporting */}
+                  <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                  <div className="space-y-4">
+                    <div className="h-2 w-1/3 bg-[#1A1A1A] rounded-full"></div>
+                    <div className="h-32 w-full bg-[#1A1A1A]/50 rounded-xl border border-white/5 flex items-center justify-center">
+                      <BarChart className="w-12 h-12 text-[#333]" />
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="h-12 w-full bg-[#1A1A1A]/50 rounded-xl border border-white/5"></div>
+                      <div className="h-12 w-full bg-[#1A1A1A]/50 rounded-xl border border-white/5"></div>
+                    </div>
+                  </div>
+
+                  {/* Floating Success Toast */}
+                  <div className="absolute bottom-6 right-6 px-4 py-3 bg-[#0F0F0F] rounded-lg border border-[#FF5100]/20 flex items-center gap-3 shadow-2xl">
+                    <div className="h-2 w-2 rounded-full bg-[#FF5100] animate-pulse"></div>
+                    <span className="text-xs font-mono text-white/80">Report Generated</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        {/* Approach Section */}
+        <section className="px-6 max-w-7xl mx-auto py-32 border-t border-white/5">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <div className="sticky top-32">
+              <span className="text-[#FF5100] font-semibold tracking-wider text-sm uppercase mb-4 block">
+                // Process
+              </span>
+              <h2 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-[#FF5100]">
+                  Approach
+                </span>
+              </h2>
+              <p className="text-[#999999] text-xl leading-relaxed mb-8 max-w-md">
+                From automation to advanced analytics, we bring your vision to life with custom AI.
+              </p>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 text-white border-b border-[#FF5100] pb-1 hover:text-[#FF5100] transition-colors"
+              >
+                See our pricing <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="space-y-12">
               {[
-                { value: "15K+", label: "HS Codes", icon: FileText },
-                { value: "99%", label: "Accuracy", icon: Target },
-                { value: "<5m", label: "Report Gen", icon: Zap },
-                { value: "€93/t", label: "Carbon Price", icon: TrendingUp },
-                { value: "24/7", label: "AI Support", icon: Bot },
-              ].map((stat) => (
-                <div key={stat.label} className="p-5 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm group hover:bg-white/10 transition-all text-center">
-                  <stat.icon className="w-6 h-6 text-emerald-400 mb-2 mx-auto group-hover:scale-110 transition-transform" />
-                  <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                  <div className="text-sm text-gray-500">{stat.label}</div>
+                {
+                  step: "01.",
+                  title: "Subscribe",
+                  desc: "Choose your plan and launch in minutes —upgrade, pause, or cancel anytime."
+                },
+                {
+                  step: "02.",
+                  title: "Analyze",
+                  desc: "We begin by auditing your workflows to pinpoint where AI can streamline and elevate your processes."
+                },
+                {
+                  step: "03.",
+                  title: "Build & Implement",
+                  desc: "Next, our engineers craft bespoke AI solutions for your company—relentlessly prioritizing quality and safety."
+                },
+                {
+                  step: "04.",
+                  title: "Test & Optimize",
+                  desc: "You approve or request revisions—we iterate fast, polishing each build until you're fully satisfied."
+                }
+              ].map((item, i) => (
+                <div key={i} className="group flex gap-8 p-6 rounded-3xl bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/30 transition-all duration-300">
+                  <span className="text-2xl font-mono text-[#FF5100]/60 group-hover:text-[#FF5100] pt-1">
+                    {item.step}
+                  </span>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-[#FF5100] transition-colors">{item.title}</h3>
+                    <p className="text-[#999] leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 px-4 relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Platform Features</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mt-4 mb-6">
-              One Platform, Complete <span className="text-emerald-400">Compliance</span>
+        {/* Metrics Section */}
+        <section className="border-y border-white/5 bg-[#0A0A0A]">
+          <div className="max-w-7xl mx-auto px-6 py-20">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              {[
+                { label: "Clients", value: "500+" },
+                { label: "Uptime", value: "99.9%" },
+                { label: "Support", value: "24/7" },
+                { label: "Integrations", value: "50+" }
+              ].map((stat, i) => (
+                <div key={i}>
+                  <div className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-[#666] font-medium uppercase tracking-wider text-sm">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+
+        {/* Reviews Section */}
+        <section className="py-32 bg-[#080808] overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 mb-16 flex items-end justify-between">
+            <div>
+              <span className="text-[#FF5100] font-semibold tracking-wider text-sm uppercase mb-2 block">
+                // Reviews
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold text-white">
+                Trusted by innovators
+              </h2>
+            </div>
+            <div className="flex gap-2 text-[#FF5100]">
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#080808] to-transparent z-10" />
+
+            <div className="flex gap-6 animate-scroll whitespace-nowrap px-6">
+              {[
+                { name: "Alex Chen", role: "CTO, TechFlow", text: "VAYA transformed our compliance workflow. The AI reporting is a game changer." },
+                { name: "Sarah Miller", role: "Ops Lead, GlobalScale", text: "Incredible attention to detail. The custom chatbot handles 90% of our queries now." },
+                { name: "David Park", role: "Founder, DataSync", text: "Fastest implementation we've ever seen. The return on investment was immediate." },
+                { name: "Emma Wilson", role: "PM, Innovate", text: "Beautifully designed dashboard and powerful API. Exactly what we needed." },
+                { name: "James Hall", role: "Director, FutureCorp", text: "The support team is world-class. They built a custom model for us in days." }
+              ].map((review, i) => (
+                <div key={i} className="w-[400px] p-8 rounded-3xl bg-[#0F0F0F] border border-white/5 mx-4 whitespace-normal">
+                  <div className="flex gap-1 text-[#FF5100] mb-4">
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
+                  </div>
+                  <p className="text-lg text-white mb-6 leading-relaxed">"{review.text}"</p>
+                  <div>
+                    <h4 className="font-bold text-white">{review.name}</h4>
+                    <p className="text-[#666] text-sm">{review.role}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section id="pricing" className="px-6 max-w-7xl mx-auto py-32">
+          <div className="mb-16 text-center">
+            <span className="text-[#FF5100] font-semibold tracking-wider text-sm uppercase mb-2 block">
+              // Pricing
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Simple, transparent pricing
             </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Everything you need to navigate EU trade regulations
+            <p className="text-[#999] max-w-xl mx-auto">
+              Choose the plan that fits your business needs. No hidden fees.
             </p>
           </div>
 
-          {/* Feature Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {mainFeatures.map((feature, i) => (
-              <button
-                key={feature.id}
-                onClick={() => setActiveFeature(i)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all ${activeFeature === i
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                    : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
-                  }`}
-              >
-                <feature.icon className="w-4 h-4" />
-                {feature.title}
-              </button>
-            ))}
-          </div>
-
-          {/* Active Feature */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-6">
-                {(() => {
-                  const IconComponent = mainFeatures[activeFeature].icon;
-                  return <IconComponent className="w-8 h-8 text-emerald-400" />;
-                })()}
-              </div>
-              <span className="text-emerald-400 text-sm font-medium">{mainFeatures[activeFeature].subtitle}</span>
-              <h3 className="text-3xl font-bold text-white mt-2 mb-4">{mainFeatures[activeFeature].title}</h3>
-              <p className="text-lg text-gray-400 mb-8">{mainFeatures[activeFeature].description}</p>
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                {mainFeatures[activeFeature].stats.map((stat) => (
-                  <div key={stat.label} className="p-4 bg-white/5 border border-white/10 rounded-xl text-center">
-                    <div className="text-xl font-bold text-white">{stat.value}</div>
-                    <div className="text-xs text-gray-500">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                {mainFeatures[activeFeature].features.map((f) => (
-                  <div key={f} className="flex items-center gap-2 text-gray-300">
-                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span className="text-sm">{f}</span>
-                  </div>
-                ))}
-              </div>
-              <Link
-                href={mainFeatures[activeFeature].link}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-all"
-              >
-                Try {mainFeatures[activeFeature].title} <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-slate-900">
-                <div className="absolute top-0 left-0 right-0 h-8 bg-slate-800 flex items-center gap-2 px-4 z-10">
-                  <div className="w-3 h-3 rounded-full bg-red-500" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                  <div className="w-3 h-3 rounded-full bg-green-500" />
-                  <span className="text-xs text-gray-500 ml-4">vaya.app/{mainFeatures[activeFeature].id}</span>
-                </div>
-                <div className="pt-8">
-                  <img
-                    src={mainFeatures[activeFeature].screenshot}
-                    alt={mainFeatures[activeFeature].title}
-                    className="w-full transition-all duration-500"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
-              </div>
-              <div className="absolute -bottom-4 -right-4 px-4 py-2 bg-emerald-500 text-white rounded-xl font-medium text-sm shadow-lg">
-                Live Preview
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* All Features Grid */}
-      <section className="py-24 px-4 bg-black/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Complete Toolkit</span>
-            <h2 className="text-4xl font-bold text-white mt-4 mb-4">Everything for <span className="text-emerald-400">EU Trade Compliance</span></h2>
-            <p className="text-gray-400 max-w-xl mx-auto">Comprehensive tools for Indian exporters</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Factory, title: "CBAM Reports", description: "EU-compliant XML generation with emissions calculation", color: "emerald", link: "/cbam", tag: "Core" },
-              { icon: Bot, title: "AI Trade Advisor", description: "Natural language Q&A for duties and regulations", color: "violet", link: "/advisor", tag: "AI" },
-              { icon: Upload, title: "Invoice OCR", description: "Auto-extract HS codes from documents", color: "amber", link: "/documents", tag: "Smart" },
-              { icon: Search, title: "HS Code Lookup", description: "Search 15K+ codes with AI classification", color: "cyan", link: "/dashboard", tag: "Database" },
-              { icon: Leaf, title: "EUDR Compliance", description: "Geolocation validation for deforestation-free exports", color: "green", link: "#", soon: true, tag: "Soon" },
-              { icon: MessageCircle, title: "WhatsApp Bot", description: "Quick HS code lookups via WhatsApp", color: "teal", link: "#", tag: "Mobile" },
-              { icon: Layers, title: "Multi-Invoice Merge", description: "Combine invoices into single submissions", color: "purple", link: "/cbam", tag: "Pro" },
-              { icon: RefreshCw, title: "Status Workflow", description: "Track reports from Draft to Submitted", color: "pink", link: "/cbam", tag: "Workflow" },
-              { icon: BarChart3, title: "Analytics Dashboard", description: "Track carbon footprint and compliance metrics", color: "orange", link: "/analytics", tag: "Insights" },
-            ].map((feature) => (
-              <Link
-                key={feature.title}
-                href={feature.link}
-                className="group p-8 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all relative overflow-hidden"
-              >
-                {feature.soon ? (
-                  <span className="absolute top-4 right-4 px-2 py-1 text-xs bg-amber-500/20 text-amber-400 rounded-full">Coming Soon</span>
-                ) : (
-                  <span className="absolute top-4 right-4 px-2 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded-full">{feature.tag}</span>
-                )}
-                <div className="w-14 h-14 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <feature.icon className="w-7 h-7 text-emerald-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                <p className="text-gray-400 mb-4 text-sm">{feature.description}</p>
-                <span className="text-emerald-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                  Explore <ChevronRight className="w-4 h-4" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" className="py-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Process</span>
-            <h2 className="text-4xl font-bold text-white mt-4 mb-4">How VAYA <span className="text-emerald-400">Works</span></h2>
-            <p className="text-gray-400">From upload to compliant report in 4 simple steps</p>
-          </div>
-          <div className="relative">
-            <div className="absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent hidden md:block" />
-            <div className="grid md:grid-cols-4 gap-8">
-              {[
-                { step: '01', title: 'Upload or Search', desc: 'Upload invoice or search HS codes', icon: Upload },
-                { step: '02', title: 'AI Processing', desc: 'AI extracts data and validates codes', icon: Sparkles },
-                { step: '03', title: 'Generate Reports', desc: 'Create CBAM/EUDR reports', icon: FileCode },
-                { step: '04', title: 'Submit & Track', desc: 'Download XML and track status', icon: Check },
-              ].map((item, i) => (
-                <div key={i} className="relative text-center group">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border-2 border-emerald-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:border-emerald-500 transition-all">
-                    <item.icon className="w-8 h-8 text-emerald-400" />
+              {
+                name: "Starter",
+                price: "$499",
+                desc: "Perfect for startups and small teams.",
+                features: ["5 AI Workflows", "Basic Support", "1 User", "Standard Analytics"]
+              },
+              {
+                name: "Pro",
+                price: "$999",
+                isPopular: true,
+                desc: "For growing companies scaling operations.",
+                features: ["15 AI Workflows", "Priority Support", "5 Users", "Advanced Analytics", "Custom Integrations"]
+              },
+              {
+                name: "Enterprise",
+                price: "Custom",
+                desc: "For large organizations with complex needs.",
+                features: ["Unlimited Workflows", "24/7 Dedicated Support", "Unlimited Users", "Custom AI Models", "SLA & Security"]
+              }
+            ].map((plan, i) => (
+              <div key={i} className={`relative p-8 rounded-3xl border flex flex-col ${plan.isPopular ? 'bg-[#0F0F0F] border-[#FF5100] shadow-[0_0_30px_rgba(255,81,0,0.1)]' : 'bg-[#0F0F0F] border-white/5'}`}>
+                {plan.isPopular && (
+                  <div className="absolute top-0 right-0 bg-[#FF5100] text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-2xl">
+                    POPULAR
                   </div>
-                  <span className="inline-block text-xs text-emerald-500 font-bold mb-2 px-3 py-1 bg-emerald-500/10 rounded-full">STEP {item.step}</span>
-                  <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                  <p className="text-sm text-gray-500">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Section */}
-      <section className="py-16 px-4 border-y border-white/5 bg-black/20">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-12 md:gap-20">
-            <div className="flex items-center gap-3">
-              <img src="https://flagcdn.com/32x24/eu.png" alt="EU" className="opacity-80" />
-              <div>
-                <p className="text-xs text-gray-500">Compliant With</p>
-                <p className="text-sm font-medium text-white">EU CBAM Registry</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <img src="https://flagcdn.com/32x24/in.png" alt="India" className="opacity-80" />
-              <div>
-                <p className="text-xs text-gray-500">Built For</p>
-                <p className="text-sm font-medium text-white">Indian Exporters</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Lock className="w-6 h-6 text-emerald-400" />
-              <div>
-                <p className="text-xs text-gray-500">Security</p>
-                <p className="text-sm font-medium text-white">256-bit Encryption</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Award className="w-6 h-6 text-amber-400" />
-              <div>
-                <p className="text-xs text-gray-500">Accuracy</p>
-                <p className="text-sm font-medium text-white">99.5% Validated</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="py-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Pricing</span>
-            <h2 className="text-4xl font-bold text-white mt-4 mb-4">Simple, <span className="text-emerald-400">Transparent</span> Pricing</h2>
-            <p className="text-gray-400">Start free, scale as you grow</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: "Free", price: "₹0", period: "forever", features: ["10 HS Code lookups/month", "3 CBAM reports/month", "AI Trade Advisor", "Email support"], cta: "Get Started", popular: false },
-              { name: "Pro", price: "₹2,499", period: "/month", features: ["Unlimited HS lookups", "Unlimited CBAM reports", "Invoice OCR & extraction", "Multi-invoice merge", "Priority support", "API access"], cta: "Start Free Trial", popular: true },
-              { name: "Enterprise", price: "Custom", period: "", features: ["Everything in Pro", "Dedicated account manager", "Custom integrations", "SLA guarantee", "On-premise deployment", "Training & onboarding"], cta: "Contact Sales", popular: false },
-            ].map((plan) => (
-              <div key={plan.name} className={`p-8 rounded-2xl border ${plan.popular ? "bg-gradient-to-b from-emerald-500/10 to-transparent border-emerald-500/50 relative" : "bg-white/5 border-white/10"}`}>
-                {plan.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-medium rounded-full flex items-center gap-1">
-                    <Star className="w-3 h-3" /> Most Popular
-                  </span>
                 )}
-                <h3 className="text-xl font-semibold text-white mb-2">{plan.name}</h3>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-bold text-white">{plan.price}</span>
-                  <span className="text-gray-500">{plan.period}</span>
-                </div>
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-gray-300 text-sm">
-                      <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+                <div className="text-4xl font-bold text-white mb-4">{plan.price}<span className="text-lg text-[#666] font-normal">/mo</span></div>
+                <p className="text-[#999] text-sm mb-8">{plan.desc}</p>
+
+                <div className="space-y-4 mb-8 flex-1">
+                  {plan.features.map((feature, f) => (
+                    <div key={f} className="flex items-center gap-3 text-sm text-[#CCC]">
+                      <CheckCircle2 className="w-4 h-4 text-[#FF5100]" />
                       {feature}
-                    </li>
+                    </div>
                   ))}
-                </ul>
-                <Link href="/dashboard" className={`block w-full py-3 text-center rounded-xl font-medium transition-all ${plan.popular ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25" : "bg-white/10 text-white hover:bg-white/20"}`}>
-                  {plan.cta}
-                </Link>
+                </div>
+
+                <button className={`w-full py-3 rounded-xl font-semibold transition-all ${plan.isPopular ? 'bg-[#FF5100] text-white hover:bg-[#FF6600]' : 'bg-white text-black hover:bg-gray-200'}`}>
+                  Get Started
+                </button>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-violet-500/20 rounded-3xl blur-xl" />
-            <div className="relative p-12 bg-slate-900/80 border border-white/10 rounded-3xl">
-              <Leaf className="w-16 h-16 text-emerald-400 mx-auto mb-6" />
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Ready to Simplify Your<br />
-                <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">EU Export Compliance?</span>
+
+        {/* Team Section */}
+        <section className="px-6 max-w-7xl mx-auto py-32 border-t border-white/5">
+          <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+              <span className="text-[#FF5100] font-semibold tracking-wider text-sm uppercase mb-2 block">
+                // Team
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold text-white">
+                Meet the experts
               </h2>
-              <p className="text-xl text-gray-400 mb-8 max-w-xl mx-auto">
-                Join 500+ Indian exporters who trust VAYA for CBAM, EUDR, and trade compliance
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/dashboard" className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  Start Free
-                </Link>
-                <Link href="/cbam" className="px-8 py-4 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-all border border-white/10 flex items-center justify-center gap-2">
-                  <Factory className="w-5 h-5" />
-                  Try CBAM Reports
-                </Link>
-              </div>
-              <p className="text-xs text-gray-500 mt-6">No credit card required • Free plan includes 3 CBAM reports/month</p>
             </div>
+            <p className="text-[#999] text-lg max-w-md">
+              We are a team of engineers, designers, and strategists obsessed with automation.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="py-16 px-4 border-t border-white/10 bg-black/30">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">V</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { name: "Michael Ross", role: "CEO & Founder", icon: <Briefcase className='w-6 h-6' /> },
+              { name: "Lara Croft", role: "Head of AI", icon: <Bot className='w-6 h-6' /> },
+              { name: "James Bond", role: "Security Lead", icon: <Shield className='w-6 h-6' /> },
+              { name: "Tony Stark", role: "Engineering", icon: <Layers className='w-6 h-6' /> },
+            ].map((member, i) => (
+              <div key={i} className="group p-6 rounded-2xl bg-[#0F0F0F] border border-white/5 text-center hover:border-[#FF5100]/20 transition-colors">
+                <div className="w-20 h-20 rounded-full bg-[#1A1A1A] mx-auto mb-6 flex items-center justify-center text-[#FF5100]/80 group-hover:scale-110 transition-transform border border-white/5">
+                  {member.icon}
                 </div>
-                <span className="font-bold text-xl text-white">VAYA</span>
+                <h3 className="font-bold text-white mb-1">{member.name}</h3>
+                <p className="text-[#666] text-sm">{member.role}</p>
               </div>
-              <p className="text-sm text-gray-500 mb-4">
-                Complete trade compliance platform for Indian exporters.
-              </p>
-              <div className="flex items-center gap-2">
-                <img src="https://flagcdn.com/24x18/eu.png" alt="EU" className="opacity-60" />
-                <span className="text-xs text-gray-500">EU Reg. 2023/956 Compliant</span>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4">Products</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li><Link href="/cbam" className="hover:text-white transition-colors">CBAM Reports</Link></li>
-                <li><Link href="/advisor" className="hover:text-white transition-colors">AI Trade Advisor</Link></li>
-                <li><Link href="/documents" className="hover:text-white transition-colors">Document Processing</Link></li>
-                <li><Link href="/dashboard" className="hover:text-white transition-colors">HS Code Lookup</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li><Link href="/cbam-features" className="hover:text-white transition-colors">CBAM Guide</Link></li>
-                <li><a href="#" className="hover:text-white transition-colors">API Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><Link href="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4">Contact</h4>
-              <ul className="space-y-3 text-sm text-gray-500">
-                <li className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  <a href="mailto:support@vaya.trade" className="hover:text-white transition-colors">support@vaya.trade</a>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  <span>+91 80 4567 8900</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 mt-0.5" />
-                  <span>Bangalore, India</span>
-                </li>
-              </ul>
-            </div>
+            ))}
           </div>
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-500">© 2024 VAYA Trade Technologies. All rights reserved.</p>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-              <Link href="https://wa.me/919876543210" className="hover:text-white transition-colors flex items-center gap-1">
-                <MessageCircle className="w-4 h-4" />
-                WhatsApp
+        </section>
+
+        {/* FAQ Section */}
+        <section className="px-6 max-w-4xl mx-auto py-20 border-t border-white/5">
+          <h2 className="text-4xl font-bold text-white mb-12 text-center">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {[
+              { q: "How quickly can we get started?", a: "You can be up and running within 24 hours. Our onboarding team will guide you through the setup process." },
+              { q: "Do you offer custom AI solutions?", a: "Yes! Our Enterprise plan includes fully bespoke AI model development tailored to your specific data and use cases." },
+              { q: "Is my data secure?", a: "Absolutely. We use bank-grade encryption and strictly adhere to GDPR and SOC2 compliance standards." },
+              { q: "Can I cancel anytime?", a: "Yes, all our plans are month-to-month. You can cancel or upgrade/downgrade at any time without penalty." }
+            ].map((item, i) => (
+              <div key={i} className="border border-white/10 rounded-2xl bg-[#0F0F0F] overflow-hidden">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-[#1A1A1A] transition-colors"
+                >
+                  <span className="font-semibold text-lg text-white">{item.q}</span>
+                  {openFaq === i ? <Minus className="w-5 h-5 text-[#FF5100]" /> : <Plus className="w-5 h-5 text-[#666]" />}
+                </button>
+                <div className={`transition-all duration-300 ease-in-out ${openFaq === i ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="p-6 pt-0 text-[#999] leading-relaxed">
+                    {item.a}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="px-6 py-32 text-center">
+          <div className="max-w-4xl mx-auto p-12 rounded-[40px] bg-gradient-to-b from-[#0F0F0F] to-[#080808] border border-white/5 relative overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#FF5100] opacity-[0.15] blur-[120px] rounded-full" />
+
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 relative z-10">
+              Ready to automate?
+            </h2>
+            <div className="flex justify-center gap-4 relative z-10">
+              <Link
+                href="/auth/register"
+                className="px-8 py-4 rounded-full bg-[#FF5100] text-white font-semibold hover:bg-[#FF6600] transition-colors shadow-[0_0_30px_rgba(255,81,0,0.3)] hover:shadow-[0_0_50px_rgba(255,81,0,0.5)]"
+              >
+                Get Started Now
               </Link>
             </div>
           </div>
+        </section>
+
+      </main>
+
+      <footer className="border-t border-white/5 py-12 bg-[#080808]">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="relative w-6 h-6">
+                <Image
+                  src="/vaya-logo.png"
+                  alt="VAYA Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <h4 className="font-bold text-xl">VAYA</h4>
+            </div>
+            <p className="text-[#666] text-sm">
+              Trade Compliance Made Intelligent.
+            </p>
+          </div>
+
+          <div>
+            <h5 className="font-semibold mb-4 text-white">Product</h5>
+            <ul className="space-y-3 text-sm text-[#999]">
+              <li><Link href="#" className="hover:text-[#FF5100]">Features</Link></li>
+              <li><Link href="#" className="hover:text-[#FF5100]">Pricing</Link></li>
+              <li><Link href="#" className="hover:text-[#FF5100]">API</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-semibold mb-4 text-white">Company</h5>
+            <ul className="space-y-3 text-sm text-[#999]">
+              <li><Link href="#" className="hover:text-[#FF5100]">About</Link></li>
+              <li><Link href="#" className="hover:text-[#FF5100]">Blog</Link></li>
+              <li><Link href="#" className="hover:text-[#FF5100]">Careers</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-semibold mb-4 text-white">Legal</h5>
+            <ul className="space-y-3 text-sm text-[#999]">
+              <li><Link href="#" className="hover:text-[#FF5100]">Privacy</Link></li>
+              <li><Link href="#" className="hover:text-[#FF5100]">Terms</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-white/5 text-center text-[#444] text-xs">
+          © 2025 VAYA Trade Compliance. All rights reserved.
         </div>
       </footer>
+
+      {/* Custom Styles not needing globals.css */}
+      <style jsx global>{`
+        @keyframes scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes scroll-reverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .animate-scroll {
+          animation: scroll 40s linear infinite;
+        }
+        .animate-scroll-reverse {
+          animation: scroll-reverse 40s linear infinite;
+        }
+      `}</style>
     </div>
   );
+}
+
+function TickerItem({ icon, title, stat }: { icon: React.ReactNode; title: string; stat: string }) {
+  return (
+    <div className="flex items-center justify-between gap-6 bg-[#0F0F0F] border border-white/5 rounded-2xl p-5 min-w-[340px] group hover:border-[#FF5100]/30 transition-all duration-300">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 rounded-lg bg-[#1A1A1A] flex items-center justify-center border border-white/5 text-white group-hover:scale-110 transition-transform duration-500">
+          {icon}
+        </div>
+        <div className="flex flex-col text-left">
+          <h4 className="font-semibold text-white text-[15px] leading-tight mb-1">{title}</h4>
+          <span className="text-xs font-semibold text-[#FF5100]">
+            {stat}
+          </span>
+        </div>
+      </div>
+      <GripVertical className="w-5 h-5 text-[#222]" />
+    </div>
+  );
+}
+
+function FeatureBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A1A1A] border border-white/5 text-xs font-medium text-white/80">
+      {icon} {text}
+    </span>
+  )
 }

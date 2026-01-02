@@ -364,10 +364,35 @@ def generate_eu_compliant_xml(report: dict) -> str:
 
 
 # ============================================================================
-# IN-MEMORY STORAGE (Replace with Database in Production)
+# PERSISTENCE (File-based JSON)
 # ============================================================================
-_reports: dict = {}
+import os
+DATA_FILE = os.path.join(os.path.dirname(__file__), "../../../data/reports.json")
 
+def load_data() -> Dict[str, dict]:
+    if not os.path.exists(DATA_FILE):
+        return {}
+    try:
+        with open(DATA_FILE, "r") as f:
+            data = json.load(f)
+            # Handle list format from previous service or dict format
+            if isinstance(data, list):
+                return {item["id"]: item for item in data}
+            return data
+    except Exception:
+        return {}
+
+def save_data(data: Dict[str, dict]):
+    try:
+        # Save as list for consistency with other services if needed, or dict
+        # List is better for JSON readability usually
+        os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
+        with open(DATA_FILE, "w") as f:
+            json.dump(list(data.values()), f, indent=2, default=str)
+    except Exception as e:
+        print(f"Error saving data: {e}")
+
+_reports: dict = load_data()
 
 # ============================================================================
 # API ENDPOINTS
@@ -460,7 +485,9 @@ async def create_cbam_report(data: CBAMReportCreate):
     }
     
     # Store report
+    # Store report
     _reports[report_id] = report
+    save_data(_reports)
     
     return CBAMReportResponse(**report)
 
@@ -518,7 +545,9 @@ async def create_simple_cbam_report(
         "xml_valid": True,
     }
     
+    # Store report
     _reports[report_id] = report
+    save_data(_reports)
     return CBAMReportResponse(**report)
 
 
@@ -608,6 +637,7 @@ async def delete_cbam_report(report_id: str):
         raise HTTPException(status_code=404, detail="Report not found")
     
     del _reports[report_id]
+    save_data(_reports)
     return {"message": "Report deleted", "id": report_id}
 
 

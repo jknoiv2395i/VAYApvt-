@@ -39,18 +39,24 @@ const features = [
 ];
 
 const sampleConversation = [
-    { type: 'user', message: 'HS: stainless steel screws for furniture' },
-    { type: 'bot', message: '🔍 **HS Code Suggestions:**\n\n**73181500** - Screws and bolts of iron/steel with nuts/washers\n• Basic Duty: 10%\n• CBAM: ✅ Applicable (Iron & Steel)\n\n**94039000** - Parts of furniture\n• Basic Duty: 15%\n• CBAM: ❌ Not applicable\n\nReply with a number for more details.' },
-    { type: 'user', message: '1' },
-    { type: 'bot', message: '📋 **HS 73181500 Details:**\n\nDescription: Screws and bolts, whether or not with their nuts or washers, of iron or steel\n\n🏭 **CBAM Category:** Iron & Steel\n💰 **Basic Duty:** 10%\n📊 **IGST:** 18%\n🌍 **EU CN Code:** 7318 15 00\n\nNeed a CBAM report? Reply "CBAM report"' },
+    { type: 'user', message: 'HS: stainless steel screws' },
+    { type: 'bot', message: 'Found some matches! 🔍' },
+    { type: 'bot', message: '1. *73181500*\nScrews and bolts of iron/steel\n⚠️ CBAM covered' },
+    { type: 'bot', message: '2. *73181600*\nNuts of iron/steel\n⚠️ CBAM covered' },
+    { type: 'bot', message: 'Need details on any of these? Just send the HS code!' },
+    { type: 'user', message: 'thanks' },
+    { type: 'bot', message: 'Happy to help! 😊' },
+    { type: 'bot', message: 'Anything else you need?' },
 ];
 
 export default function WhatsAppPage() {
     const [copied, setCopied] = useState(false);
-    const phoneNumber = '+91-9876543210';
+    // WhatsApp business number (use your actual registered WhatsApp Business number)
+    const phoneNumber = '+91 80456 78900';  // Display format
+    const phoneNumberClean = '918045678900';  // For wa.me link (must be WhatsApp registered)
 
     const copyNumber = () => {
-        navigator.clipboard.writeText('919876543210');
+        navigator.clipboard.writeText(phoneNumberClean);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
@@ -93,7 +99,7 @@ export default function WhatsAppPage() {
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <a
-                            href="https://wa.me/919876543210?text=Hi%20VAYA"
+                            href="https://wa.me/918045678900?text=Hi%20VAYA"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-8 py-4 bg-[#25D366] text-white rounded-xl font-medium hover:bg-[#20BD5A] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/25"
@@ -166,8 +172,8 @@ export default function WhatsAppPage() {
                             {sampleConversation.map((msg, i) => (
                                 <div key={i} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.type === 'user'
-                                            ? 'bg-[#005C4B] text-white rounded-br-sm'
-                                            : 'bg-[#202C33] text-white rounded-bl-sm'
+                                        ? 'bg-[#005C4B] text-white rounded-br-sm'
+                                        : 'bg-[#202C33] text-white rounded-bl-sm'
                                         }`}>
                                         <p className="whitespace-pre-line">{msg.message.replace(/\*\*(.*?)\*\*/g, '$1')}</p>
                                     </div>
@@ -214,7 +220,7 @@ export default function WhatsAppPage() {
                 {/* CTA */}
                 <section className="text-center">
                     <a
-                        href="https://wa.me/919876543210?text=Hi%20VAYA"
+                        href="https://wa.me/918045678900?text=Hi%20VAYA"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-10 py-5 bg-[#25D366] text-white rounded-xl font-medium text-lg hover:bg-[#20BD5A] transition-all shadow-lg shadow-[#25D366]/25"

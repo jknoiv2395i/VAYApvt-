@@ -33,6 +33,10 @@ sentencepiece>=0.1.99
 lxml>=5.1.0
 xmlschema>=3.0.0
 
+# EUDR Geospatial (Geometry Validation)
+shapely>=2.0.0
+geojson>=3.1.0
+
 # Utilities
 httpx>=0.25.0
 requests>=2.31.0

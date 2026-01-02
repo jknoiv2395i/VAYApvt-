@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     TWILIO_ACCOUNT_SID: Optional[str] = None
     TWILIO_AUTH_TOKEN: Optional[str] = None
     TWILIO_WHATSAPP_NUMBER: Optional[str] = None
+    WHATSAPP_SUPPORT_NUMBER: str = "+918045678900"  # +91 80 4567 8900
     
     # Supabase Storage
     SUPABASE_URL: Optional[str] = None
