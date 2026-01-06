@@ -89,6 +89,8 @@ class User(Base):
     )
     documents = relationship("Document", back_populates="user")
     cbam_reports = relationship("CBAMReport", back_populates="user")
+    authorization_applications = relationship("AuthorizationApplication", back_populates="user")
+    threshold_tracking = relationship("ImportThresholdTracking", back_populates="user")
     
     def __repr__(self) -> str:
         return f"<User {self.email}>"
