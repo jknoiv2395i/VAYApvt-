@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/vaya"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./vaya.db"
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"

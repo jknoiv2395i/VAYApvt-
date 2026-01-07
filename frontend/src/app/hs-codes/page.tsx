@@ -90,20 +90,46 @@ export default function HSCodeLandingPage() {
         setMappingResult(null);
         setAnimateBridge(false);
 
-        // Simulate API call delay
-        await new Promise(r => setTimeout(r, 1500));
+        try {
+            // Call the real backend API
+            const response = await fetch(`http://localhost:8000/api/v1/hs-codes/search?q=${encodeURIComponent(searchQuery)}&limit=1`);
+            const data = await response.json();
 
-        // Find closest match from sample data
-        const lowerQuery = searchQuery.toLowerCase();
-        let bestMatch = SAMPLE_MAPPINGS["steel screws"]; // default
-        for (const key of Object.keys(SAMPLE_MAPPINGS)) {
-            if (lowerQuery.includes(key) || key.includes(lowerQuery.split(" ")[0])) {
-                bestMatch = SAMPLE_MAPPINGS[key];
-                break;
+            if (data.results && data.results.length > 0) {
+                const result = data.results[0];
+                setMappingResult({
+                    indian: result.hs_code || "",
+                    indianDesc: result.description || "",
+                    eu: result.cn_code || result.hs_code || "",
+                    euDesc: result.description || "",
+                    cbam: result.cbam_category ? true : false
+                });
+            } else {
+                // No results found - try sample data as fallback
+                const lowerQuery = searchQuery.toLowerCase();
+                let bestMatch = SAMPLE_MAPPINGS["steel screws"];
+                for (const key of Object.keys(SAMPLE_MAPPINGS)) {
+                    if (lowerQuery.includes(key) || key.includes(lowerQuery.split(" ")[0])) {
+                        bestMatch = SAMPLE_MAPPINGS[key];
+                        break;
+                    }
+                }
+                setMappingResult(bestMatch);
             }
+        } catch (error) {
+            console.error("Search error:", error);
+            // Fallback to sample data if API fails
+            const lowerQuery = searchQuery.toLowerCase();
+            let bestMatch = SAMPLE_MAPPINGS["steel screws"];
+            for (const key of Object.keys(SAMPLE_MAPPINGS)) {
+                if (lowerQuery.includes(key) || key.includes(lowerQuery.split(" ")[0])) {
+                    bestMatch = SAMPLE_MAPPINGS[key];
+                    break;
+                }
+            }
+            setMappingResult(bestMatch);
         }
 
-        setMappingResult(bestMatch);
         setIsSearching(false);
         setAnimateBridge(true);
     };

@@ -521,6 +521,7 @@ def search_hs_codes(query: str, limit: int = 10) -> List[Dict]:
     query_lower = query.lower()
     results = []
     
+    # First search CBAM/existing mappings
     for code, data in ALL_MAPPINGS.items():
         if query in code or query_lower in data["desc"].lower():
             results.append({
@@ -533,6 +534,15 @@ def search_hs_codes(query: str, limit: int = 10) -> List[Dict]:
         
         if len(results) >= limit:
             break
+    
+    # If not enough results, also search the complete HS library
+    if len(results) < limit:
+        try:
+            from app.data.hs_code_library import search_hs_library
+            library_results = search_hs_library(query, limit - len(results))
+            results.extend(library_results)
+        except ImportError:
+            pass  # Library not available yet
     
     return results
 
