@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
   Sparkles,
@@ -39,6 +39,51 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const [activeProcessStep, setActiveProcessStep] = useState(0);
+  const processStepsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const processSectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (processSectionRef.current) {
+        const rect = processSectionRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        // Calculate progress: 0 when section enters, 1 when section leaves (roughly)
+        // Adjust logic: We want 0% when the first card is focused, 100% when last is.
+        // Let's us the Sticky behavior duration.
+        // rect.top is position of top of section relative to viewport top.
+        // When rect.top is 128 (top-32), we are at start.
+        // When rect.bottom is windowHeight, we are at end.
+
+        const sectionTop = rect.top;
+        const sectionHeight = rect.height;
+        const scrollRange = sectionHeight - windowHeight;
+
+        // Progress of scrolling *through* the sticky area
+        // We start counting when top reaches close to 0 (or sticky offset)
+        const startOffset = windowHeight / 3; // Start animating when section is a bit up
+        let progress = (windowHeight - sectionTop - startOffset) / (sectionHeight - startOffset);
+
+        progress = Math.max(0, Math.min(1, progress));
+        setScrollProgress(progress);
+
+        // Map progress to steps (0-3)
+        // We have 4 steps. 
+        // 0.0 - 0.25 -> Step 0
+        // 0.25 - 0.5 -> Step 1
+        // 0.5 - 0.75 -> Step 2
+        // 0.75 - 1.0 -> Step 3
+        const stepIndex = Math.min(3, Math.floor(progress * 4));
+        setActiveProcessStep(stepIndex);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Init
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -72,12 +117,11 @@ export default function Home() {
           <div className="flex items-center justify-between h-[57px] rounded-full bg-[#080808]/40 border border-white/5 backdrop-blur-xl px-2 pl-6 shadow-lg shadow-black/20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 pr-8">
-              <div className="w-[21px] h-[21px] flex items-center justify-center">
-                <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M3.36 10.5C3.36 7.09191 5.68743 4.23444 8.82 3.4692V0C3.81969 0.81438 0 5.20548 0 10.5C0 15.7945 3.81969 20.1856 8.82 21V17.5308C5.68743 16.7656 3.36 13.9081 3.36 10.5ZM21 10.5C21 15.7945 17.1803 20.1856 12.18 21V17.5308C15.3128 16.7656 17.64 13.9081 17.64 10.5C17.64 7.09191 15.3128 4.23444 12.18 3.4692V0C17.1803 0.81438 21 5.20548 21 10.5Z" fill="white" />
-                </svg>
-              </div>
-              <span className="font-semibold text-[19px] tracking-tight text-[#FAFAFA]">Genesy</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 4C6 4 3 7 3 12C3 17 6 20 10 20" stroke="white" strokeWidth="3" strokeLinecap="round" />
+                <path d="M14 20C18 20 21 17 21 12C21 7 18 4 14 4" stroke="white" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+              <span className="font-semibold text-[19px] tracking-tight text-[#FAFAFA]">VAYA</span>
             </Link>
 
             {/* Desktop Menu */}
@@ -144,11 +188,9 @@ export default function Home() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-6xl md:text-8xl lg:text-[88px] font-bold tracking-[-0.02em] leading-[1.1] mb-8 mx-auto max-w-6xl" style={{ position: 'absolute', top: '38px' }}>
+          <h1 className="text-6xl md:text-8xl lg:text-[88px] font-bold tracking-[-0.02em] leading-[1.1] mb-8 mx-auto max-w-6xl text-transparent bg-clip-text bg-gradient-to-r from-[#FF5100] via-[#FF8F00] to-[#FFE0CC]" style={{ position: 'absolute', top: '38px' }}>
             Build Smarter <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5100] via-[#FF8F00] to-[#FF5100] animate-gradient-x bg-[length:200%_auto]">
-              Growth With AI
-            </span>
+            Growth With AI
           </h1>
 
           {/* Subheadline */}
@@ -178,9 +220,11 @@ export default function Home() {
         </section>
 
         {/* Marquee/Ticker Section */}
-        <section className="relative w-full py-20 overflow-hidden border-t border-white/5 bg-[#080808]">
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10" />
-          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#080808] to-transparent z-10" />
+        <section
+          className="w-full py-20 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+          style={{ position: 'absolute', top: '437px', left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '1400px', zIndex: 20 }}
+        >
+          {/* Removed manual gradient divs in favor of mask-image for true transparency */}
 
           <div className="flex flex-col gap-6">
             {/* Row 1 */}
@@ -290,7 +334,14 @@ export default function Home() {
               // Services
             </span>
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+              <h2
+                className="text-5xl md:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(71, 29, 114, 0) 100%)',
+                  WebkitBackgroundClip: 'text',
+                  color: 'transparent'
+                }}
+              >
                 AI Solutions
               </h2>
               <p className="text-[#999999] max-w-md text-lg leading-relaxed">
@@ -299,153 +350,259 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Main Card 1: Chatbot */}
-            <div className="lg:col-span-2 group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden min-h-[400px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* ROW 1: Chatbot (2/3) + Tools (1/3) */}
+
+            {/* Card 1: Chatbot Development */}
+            <div className="md:col-span-2 group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden min-h-[400px]">
               <div className="relative z-10 flex flex-col h-full justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                  <MessageCircle className="w-6 h-6 text-white" />
+                <div className="flex justify-between items-start">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500">
+                    <MessageCircle className="w-6 h-6 text-white" />
+                  </div>
+                  <GripVertical className="w-5 h-5 text-[#333]" />
                 </div>
 
-                <div>
+                <div className="mt-8">
                   <h3 className="text-3xl font-semibold text-white mb-3">Chatbot Development</h3>
-                  <p className="text-[#999999] text-lg">
+                  <p className="text-[#999999] text-lg max-w-lg mb-8">
                     We build custom AI chat for instant support and streamlined operations.
                   </p>
+
+                  {/* Tags */}
+                  <div className="flex gap-3 text-xs font-mono text-[#FF5100]">
+                    <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-[#FF5100]/20">PLAN</div>
+                    <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-[#FF5100]/20">ANALYZE</div>
+                    <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-[#FF5100]/20">FORECAST</div>
+                  </div>
                 </div>
 
-                {/* Simulated Ticker/Features inside card */}
-                <div className="mt-8 flex gap-3 overflow-hidden opacity-50 text-xs font-mono text-white/40">
-                  <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-white/5">PLAN</div>
-                  <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-white/5">ANALYZE</div>
-                  <div className="px-3 py-1.5 rounded-lg bg-[#1A1A1A] border border-white/5">FORECAST</div>
+                {/* Input Simulation at Bottom */}
+                <div className="mt-auto pt-8">
+                  <div className="text-sm text-[#666] mb-3">Build your AI assistant with confidence</div>
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-[#0A0A0A] border border-white/10">
+                    <Plus className="w-4 h-4 text-[#FF5100]" />
+                    <div className="h-1.5 w-24 bg-[#333] rounded-full"></div>
+                    <div className="ml-auto flex gap-2">
+                      <div className="w-4 h-4 rounded-full bg-[#333]"></div>
+                      <div className="w-4 h-4 rounded-full bg-[#333]"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Graduate Effect */}
-              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#FF5100] opacity-[0.03] blur-[100px] group-hover:opacity-[0.08] transition-opacity" />
+              {/* Gradient Effect */}
+              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#FF5100] opacity-[0.03] blur-[100px] group-hover:opacity-[0.06] transition-opacity pointer-events-none" />
             </div>
 
-            {/* Side Card: Tools */}
+            {/* Card 2: Tools Integrations */}
             <div className="group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden min-h-[400px]">
               <div className="relative z-10 flex flex-col h-full justify-between">
-                <div className="flex gap-3">
+                <div className="flex justify-between items-start">
                   <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5">
-                    <Zap className="w-6 h-6 text-[#FF5100]" />
+                    <Link2 className="w-6 h-6 text-white" />
                   </div>
-                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5">
-                    <Link2 className="w-6 h-6 text-[#FF5100]" />
-                  </div>
+                  <GripVertical className="w-5 h-5 text-[#333]" />
                 </div>
 
-                <div>
+                <div className="mt-6">
                   <h3 className="text-2xl font-semibold text-white mb-3">Tools Integrations</h3>
-                  <p className="text-[#999999]">
+                  <p className="text-[#999999] text-sm leading-relaxed">
                     We plug AI into your software, CRM systems, and marketing touchpoints.
                   </p>
                 </div>
+
+                {/* Logo Grid */}
+                <div className="grid grid-cols-4 gap-3 mt-8">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="aspect-square rounded-xl bg-[#1A1A1A] border border-white/5 flex items-center justify-center group-hover:border-[#FF5100]/20 transition-colors">
+                      <Zap className="w-4 h-4 text-[#444] group-hover:text-[#FF5100] transition-colors" />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#FF5100]/5 to-transparent pointer-events-none" />
             </div>
 
-            {/* Wide Card 2: Reporting */}
-            <div className="lg:col-span-3 group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5 mb-8">
-                    <BarChart className="w-6 h-6 text-white" />
+            {/* ROW 2: Workflows (1/3) + Strategy (2/3) */}
+
+            {/* Card 3: Automated Workflows */}
+            <div className="group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden min-h-[400px]">
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex justify-between items-start">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5">
+                    <Layers className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-3xl font-semibold text-white mb-4">CBAM Reporting Engine</h3>
-                  <p className="text-[#999999] text-lg mb-8">
-                    Automate your carbon reporting with our intelligent XML generation and validation engine.
-                    Certified for EU compliance.
+                  <GripVertical className="w-5 h-5 text-[#333]" />
+                </div>
+
+                <div className="mt-6 mb-6">
+                  <h3 className="text-2xl font-semibold text-white mb-2">Automated Workflows</h3>
+                  <p className="text-[#999999] text-sm">
+                    Streamline tasks and save time.
                   </p>
-                  <div className="flex gap-4">
-                    <FeatureBadge icon={<Check className="w-3 h-3" />} text="XML Generation" />
-                    <FeatureBadge icon={<Check className="w-3 h-3" />} text="Validation" />
-                    <FeatureBadge icon={<Check className="w-3 h-3" />} text="Archives" />
-                  </div>
                 </div>
-                <div className="relative h-[300px] rounded-2xl bg-[#080808] border border-white/5 p-6 overflow-hidden">
-                  {/* Abstract Visual Rep of Reporting */}
-                  <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-                  <div className="space-y-4">
-                    <div className="h-2 w-1/3 bg-[#1A1A1A] rounded-full"></div>
-                    <div className="h-32 w-full bg-[#1A1A1A]/50 rounded-xl border border-white/5 flex items-center justify-center">
-                      <BarChart className="w-12 h-12 text-[#333]" />
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="h-12 w-full bg-[#1A1A1A]/50 rounded-xl border border-white/5"></div>
-                      <div className="h-12 w-full bg-[#1A1A1A]/50 rounded-xl border border-white/5"></div>
-                    </div>
-                  </div>
 
-                  {/* Floating Success Toast */}
-                  <div className="absolute bottom-6 right-6 px-4 py-3 bg-[#0F0F0F] rounded-lg border border-[#FF5100]/20 flex items-center gap-3 shadow-2xl">
-                    <div className="h-2 w-2 rounded-full bg-[#FF5100] animate-pulse"></div>
-                    <span className="text-xs font-mono text-white/80">Report Generated</span>
+                {/* Workflow Items List */}
+                <div className="space-y-3">
+                  {[
+                    { title: "Invoice Data Extraction", stat: "3X faster processing" },
+                    { title: "HS Code Classification", stat: "99% accuracy" },
+                    { title: "Supplier Outreach", stat: "Automated follow-ups" }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-[#141414] border border-white/5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
+                          <Zap className="w-4 h-4 text-white/40" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-white">{item.title}</div>
+                          <div className="text-[10px] text-[#FF5100] font-semibold">{item.stat}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4: Compliance Strategy / Analytics */}
+            <div className="md:col-span-2 group relative p-8 rounded-[32px] bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/20 transition-all duration-500 overflow-hidden min-h-[400px]">
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex justify-between items-start">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center border border-white/5">
+                    <LineChart className="w-6 h-6 text-white" />
+                  </div>
+                  <GripVertical className="w-5 h-5 text-[#333]" />
+                </div>
+
+                <div className="mt-6 mb-auto">
+                  <h3 className="text-3xl font-semibold text-white mb-3">Compliance Strategy</h3>
+                  <p className="text-[#999999] text-lg max-w-lg mb-4">
+                    Get expert guidance to navigate EUDR & CBAM regulations with AI-driven insights.
+                  </p>
+                </div>
+
+                {/* Chart Visual */}
+                <div className="relative h-40 w-full mt-8 flex items-end gap-4 px-4 pb-4 border-b border-l border-white/10">
+                  <div className="w-full bg-[#1A1A1A] rounded-t-lg h-[40%] group-hover:bg-[#FF5100]/20 transition-colors relative">
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-[#666]">+10%</span>
+                  </div>
+                  <div className="w-full bg-[#1A1A1A] rounded-t-lg h-[65%] group-hover:bg-[#FF5100]/40 transition-colors relative">
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-[#666]">+25%</span>
+                  </div>
+                  <div className="w-full bg-[#1A1A1A] rounded-t-lg h-[50%] group-hover:bg-[#FF5100]/30 transition-colors relative">
+                    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-[#666]">Mar</span>
+                  </div>
+                  <div className="w-full bg-[#1A1A1A] rounded-t-lg h-[85%] group-hover:bg-[#FF5100]/60 transition-colors relative">
+                    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-[#666]">Apr</span>
+                  </div>
+                  <div className="w-full bg-[#1A1A1A] rounded-t-lg h-[100%] bg-gradient-to-t from-[#FF5100] to-[#FF8F00] relative shadow-[0_0_20px_rgba(255,81,0,0.3)]">
+                    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-[#FFF]">May</span>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </section>
 
-
-        {/* Approach Section */}
-        <section className="px-6 max-w-7xl mx-auto py-32 border-t border-white/5">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            <div className="sticky top-32">
-              <span className="text-[#FF5100] font-semibold tracking-wider text-sm uppercase mb-4 block">
-                // Process
-              </span>
-              <h2 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-[#FF5100]">
-                  Approach
+        {/* Process Section - With Scroll Animation */}
+        <section id="process-section" ref={processSectionRef} className="py-24 px-4 relative z-10 bg-[#080808]">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row gap-20">
+            {/* Left Column: Sticky Heading */}
+            <div className="lg:w-1/2 lg:sticky lg:top-32 h-fit">
+              <div className="flex items-center gap-2 mb-6">
+                <span className="text-[#FF5100] font-semibold text-sm">//</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5100] to-[#FAFAFA] font-semibold text-sm uppercase tracking-wider">
+                  Process
                 </span>
+              </div>
+
+              {/* Scroll-Linked Gradient Title */}
+              <h2
+                className="text-7xl font-bold tracking-tighter text-transparent bg-clip-text mb-8 leading-[0.9] transition-all duration-75 ease-linear"
+                style={{
+                  backgroundImage: `linear-gradient(to right, #FF5100 ${scrollProgress * 100}%, #FAFAFA ${Math.min(100, (scrollProgress * 100) + 20)}%)`
+                }}
+              >
+                Approach
               </h2>
-              <p className="text-[#999999] text-xl leading-relaxed mb-8 max-w-md">
+
+              <p className="text-[#999999] text-lg max-w-md mb-12">
                 From automation to advanced analytics, we bring your vision to life with custom AI.
               </p>
+
               <Link
-                href="/pricing"
-                className="inline-flex items-center gap-2 text-white border-b border-[#FF5100] pb-1 hover:text-[#FF5100] transition-colors"
+                href="/dashboard"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/30 transition-all group"
               >
-                See our pricing <ArrowRight className="w-4 h-4" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5100] to-white font-semibold group-hover:opacity-80 transition-opacity">
+                  Start Mapping
+                </span>
               </Link>
             </div>
 
-            <div className="space-y-12">
+            {/* Right Column: Steps */}
+            <div className="lg:w-1/2 flex flex-col gap-6">
               {[
                 {
-                  step: "01.",
+                  num: "01",
                   title: "Subscribe",
-                  desc: "Choose your plan and launch in minutes —upgrade, pause, or cancel anytime."
+                  desc: "Choose your plan and launch in minutes — upgrade, pause, or cancel anytime."
                 },
                 {
-                  step: "02.",
+                  num: "02",
                   title: "Analyze",
                   desc: "We begin by auditing your workflows to pinpoint where AI can streamline and elevate your processes."
                 },
                 {
-                  step: "03.",
+                  num: "03",
                   title: "Build & Implement",
-                  desc: "Next, our engineers craft bespoke AI solutions for your company—relentlessly prioritizing quality and safety."
+                  desc: "Next, our engineers craft bespoke AI solutions for your company — relentlessly prioritizing quality and safety."
                 },
                 {
-                  step: "04.",
-                  title: "Test & Optimize",
-                  desc: "You approve or request revisions—we iterate fast, polishing each build until you're fully satisfied."
+                  num: "04",
+                  title: "Test & Optimise",
+                  desc: "You approve or request revisions — we iterate fast, polishing each build until you're fully satisfied."
                 }
-              ].map((item, i) => (
-                <div key={i} className="group flex gap-8 p-6 rounded-3xl bg-[#0F0F0F] border border-white/5 hover:border-[#FF5100]/30 transition-all duration-300">
-                  <span className="text-2xl font-mono text-[#FF5100]/60 group-hover:text-[#FF5100] pt-1">
-                    {item.step}
-                  </span>
+              ].map((step, i) => (
+                <div
+                  key={i}
+                  data-index={i}
+                  className={`group relative p-8 rounded-2xl bg-[#0F0F0F] border transition-all duration-300 min-h-[220px] flex flex-col justify-between ${activeProcessStep === i
+                    ? 'border-[#FF5100]/40 shadow-[0_0_80px_-20px_rgba(255,81,0,0.15)] opacity-100'
+                    : 'border-white/5 opacity-40 grayscale hover:grayscale-0 hover:opacity-60'
+                    }`}
+                >
+                  {/* Highlighter Bars - Global Progress Logic */}
+                  <div className="absolute top-8 right-8 flex gap-1">
+                    {[...Array(4)].map((_, barIndex) => (
+                      <div
+                        key={barIndex}
+                        className={`w-1.5 h-4 rounded-sm transition-all duration-300 ${barIndex <= activeProcessStep
+                          ? 'bg-[#FF5100] shadow-[0_0_10px_rgba(255,81,0,0.6)]'
+                          : 'bg-[#333]'
+                          }`}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="flex justify-between items-start mb-6">
+                    <span className={`text-4xl font-bold font-mono transition-colors duration-300 ${activeProcessStep === i
+                      ? 'text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FF5100]/50 drop-shadow-[0_0_15px_rgba(255,81,0,0.3)]'
+                      : 'text-white/20'
+                      }`}>
+                      {step.num}.
+                    </span>
+                  </div>
+
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-[#FF5100] transition-colors">{item.title}</h3>
+                    <h3 className={`text-2xl font-semibold mb-2 transition-colors duration-300 ${activeProcessStep === i ? 'text-white' : 'text-white/60'
+                      }`}>
+                      {step.title}
+                    </h3>
                     <p className="text-[#999] leading-relaxed">
-                      {item.desc}
+                      {step.desc}
                     </p>
                   </div>
                 </div>
@@ -745,9 +902,9 @@ export default function Home() {
 
 function TickerItem({ icon, title, stat }: { icon: React.ReactNode; title: string; stat: string }) {
   return (
-    <div className="flex items-center justify-between gap-6 bg-[#0F0F0F] border border-white/5 rounded-2xl p-5 min-w-[340px] group hover:border-[#FF5100]/30 transition-all duration-300">
+    <div className="flex items-center justify-between gap-6 bg-[#0A0A0A]/90 backdrop-blur-md border border-white/10 rounded-2xl p-5 min-w-[340px] group hover:border-[#FF5100]/40 transition-all duration-300 shadow-xl">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-lg bg-[#1A1A1A] flex items-center justify-center border border-white/5 text-white group-hover:scale-110 transition-transform duration-500">
+        <div className="w-10 h-10 rounded-lg bg-[#141414] flex items-center justify-center border border-white/5 text-white group-hover:scale-110 transition-transform duration-500">
           {icon}
         </div>
         <div className="flex flex-col text-left">
@@ -757,7 +914,7 @@ function TickerItem({ icon, title, stat }: { icon: React.ReactNode; title: strin
           </span>
         </div>
       </div>
-      <GripVertical className="w-5 h-5 text-[#222]" />
+      <GripVertical className="w-5 h-5 text-[#333]" />
     </div>
   );
 }

@@ -3,18 +3,18 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import DashboardWrapper from '@/components/dashboard/DashboardWrapper';
 import {
     Search,
-    ArrowLeft,
-    FileText,
     Factory,
-    Leaf,
-    AlertCircle,
+    Sparkles,
     Loader2,
     ChevronRight,
-    Check,
-    X,
-    Sparkles
+    AlertCircle,
+    Copy,
+    Share2,
+    TrendingUp,
+    AlertTriangle
 } from 'lucide-react';
 
 interface HSCodeResult {
@@ -84,171 +84,182 @@ function SearchContent() {
         }
     };
 
-    const getCategoryColor = (category?: string) => {
-        switch (category) {
-            case 'iron_steel': return 'from-slate-500 to-slate-700';
-            case 'aluminium': return 'from-blue-500 to-blue-700';
-            case 'cement': return 'from-amber-500 to-amber-700';
-            case 'fertilisers': return 'from-green-500 to-green-700';
-            default: return 'from-violet-500 to-violet-700';
-        }
-    };
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-            {/* Header */}
-            <header className="border-b border-white/10 bg-black/20 backdrop-blur-xl sticky top-0 z-50">
-                <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-4">
-                    <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
-                        <ArrowLeft className="w-5 h-5" />
-                    </Link>
-                    <div className="flex-1">
+        <DashboardWrapper>
+            <div className="max-w-5xl mx-auto space-y-8">
+                {/* Header Area */}
+                <div className="flex justify-between items-center py-2">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-white">HS Classification</h1>
+                        <p className="text-gray-400 text-sm">Calculate duties and finding correct HS codes</p>
+                    </div>
+                </div>
+
+                {/* Main Search Input: Transaction Style */}
+                <div className="bg-[#121212] rounded-3xl p-8 md:p-12 text-center border border-white/5 relative overflow-hidden group shadow-2xl">
+                    {/* Background Glow */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#FF5100]/5 blur-[80px] rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+
+                    <div className="relative z-10 max-w-2xl mx-auto">
+                        <label className="block text-gray-500 mb-6 font-medium uppercase tracking-widest text-xs">
+                            Product Description
+                        </label>
                         <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                             <input
                                 type="text"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSearch(query)}
-                                placeholder="Search HS codes or describe product..."
-                                className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                                className="w-full bg-transparent text-center text-4xl md:text-5xl font-bold text-white focus:outline-none placeholder:text-gray-800 caret-[#FF5100] transition-all"
+                                placeholder="Cotton Shirt..."
+                                autoFocus
                             />
+                            {query && (
+                                <button
+                                    onClick={() => setQuery('')}
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-full transition-colors"
+                                >
+                                    {/* Clear icon if needed */}
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="mt-10 flex justify-center">
+                            <button
+                                onClick={() => handleSearch(query)}
+                                disabled={loading && aiLoading}
+                                className="bg-[#FF5100] hover:bg-[#ff6a26] text-white px-8 py-3.5 rounded-xl font-medium flex items-center gap-2 shadow-[0_4px_20px_rgba(255,81,0,0.25)] hover:shadow-[0_4px_30px_rgba(255,81,0,0.4)] transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {(loading || aiLoading) ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <Search className="w-5 h-5" />
+                                )}
+                                <span>Calculate Duties</span>
+                            </button>
                         </div>
                     </div>
-                    <button
-                        onClick={() => handleSearch(query)}
-                        className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:from-emerald-600 hover:to-teal-700 transition-all"
-                    >
-                        Search
-                    </button>
                 </div>
-            </header>
 
-            <main className="max-w-5xl mx-auto px-4 py-8">
-                {/* AI Suggestions */}
-                {(aiLoading || aiMatches.length > 0) && (
-                    <section className="mb-8">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Sparkles className="w-5 h-5 text-violet-400" />
-                            <h2 className="text-lg font-semibold text-white">AI Suggestions</h2>
-                            {aiLoading && <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />}
-                        </div>
+                {/* Results Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                        <div className="grid gap-4">
-                            {aiMatches.map((match, i) => (
-                                <div
-                                    key={i}
-                                    className="bg-gradient-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/30 rounded-2xl p-6"
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-start gap-4">
-                                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getCategoryColor(match.cbam_category)} flex items-center justify-center`}>
-                                                <Factory className="w-6 h-6 text-white" />
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className="text-2xl font-bold text-white">{match.hs_code}</span>
-                                                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${match.confidence === 'high'
-                                                            ? 'bg-emerald-500/20 text-emerald-400'
-                                                            : 'bg-amber-500/20 text-amber-400'
-                                                        }`}>
-                                                        {match.confidence} confidence
-                                                    </span>
-                                                </div>
-                                                <p className="text-gray-300">{match.description}</p>
-                                                <p className="text-sm text-gray-500 mt-2">{match.reasoning}</p>
-                                            </div>
+                    {/* Left Col: High Confidence AI Match (Featured Card) */}
+                    <div className="lg:col-span-1 space-y-6">
+                        <h3 className="text-lg font-medium text-gray-300 flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-[#FF5100]" />
+                            AISuggestion
+                        </h3>
+
+                        {aiLoading ? (
+                            <div className="h-64 rounded-2xl bg-[#121212] animate-pulse border border-white/5" />
+                        ) : aiMatches.length > 0 ? (
+                            <div className="bg-gradient-to-b from-[#1A1A1A] to-[#121212] rounded-2xl p-6 border border-white/10 shadow-lg relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-4 opacity-50">
+                                    <Factory className="w-24 h-24 text-white/5 -rotate-12" />
+                                </div>
+
+                                <div className="relative z-10">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="w-10 h-10 rounded-full bg-[#FF5100]/20 flex items-center justify-center">
+                                            <span className="text-[#FF5100] font-bold text-xs">AI</span>
                                         </div>
-                                        <Link
-                                            href="/cbam"
-                                            className="px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm font-medium"
-                                        >
-                                            Create Report →
-                                        </Link>
+                                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${aiMatches[0].confidence === 'high' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                                            }`}>
+                                            {aiMatches[0].confidence}
+                                        </span>
+                                    </div>
+
+                                    <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-1">Recommended Code</h4>
+                                    <p className="text-3xl font-mono text-white tracking-widest mb-4">
+                                        {aiMatches[0].hs_code}
+                                    </p>
+
+                                    <p className="text-gray-400 text-sm leading-relaxed mb-6 border-l-2 border-[#FF5100] pl-3">
+                                        {aiMatches[0].reasoning}
+                                    </p>
+
+                                    <div className="flex gap-2">
+                                        <button className="flex-1 bg-white/5 hover:bg-white/10 text-white py-2 rounded-lg text-sm font-medium transition-colors border border-white/5">
+                                            Details
+                                        </button>
+                                        <button className="flex-1 bg-[#FF5100]/10 hover:bg-[#FF5100]/20 text-[#FF5100] py-2 rounded-lg text-sm font-medium transition-colors border border-[#FF5100]/20">
+                                            Use Code
+                                        </button>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                {/* Database Results */}
-                <section>
-                    <div className="flex items-center gap-2 mb-4">
-                        <FileText className="w-5 h-5 text-gray-400" />
-                        <h2 className="text-lg font-semibold text-white">
-                            {loading ? 'Searching...' : `${results.length} Results`}
-                        </h2>
-                        {loading && <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />}
+                            </div>
+                        ) : (
+                            <div className="h-64 rounded-2xl bg-[#121212] border border-white/5 flex items-center justify-center flex-col gap-4 text-center p-6">
+                                <Search className="w-8 h-8 text-gray-700" />
+                                <p className="text-gray-500 text-sm">Enter a product to generate an <br />AI recommendation.</p>
+                            </div>
+                        )}
                     </div>
 
-                    {loading ? (
-                        <div className="flex items-center justify-center py-20">
-                            <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+                    {/* Right Col: Database Results (Transaction List) */}
+                    <div className="lg:col-span-2 space-y-4">
+                        <div className="flex justify-between items-end">
+                            <h3 className="text-lg font-medium text-gray-300">Database Matches</h3>
+                            {results.length > 0 && <span className="text-xs text-gray-500">{results.length} found</span>}
                         </div>
-                    ) : results.length === 0 && query ? (
-                        <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/10">
-                            <AlertCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold text-white mb-2">No Results Found</h3>
-                            <p className="text-gray-400">Try a different search term or use AI suggestions above</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {results.map((result, i) => (
-                                <div
-                                    key={i}
-                                    className="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-all group"
-                                >
-                                    <div className="flex items-center justify-between">
+
+                        {loading ? (
+                            <div className="space-y-3">
+                                {[1, 2, 3].map(i => <div key={i} className="h-20 bg-[#121212] rounded-xl animate-pulse" />)}
+                            </div>
+                        ) : results.length > 0 ? (
+                            <div className="bg-[#121212] rounded-2xl overflow-hidden border border-white/5">
+                                {results.map((result, i) => (
+                                    <div
+                                        key={i}
+                                        className="group p-4 flex items-center justify-between border-b border-white/5 hover:bg-white/[0.02] transition-colors last:border-0 cursor-pointer"
+                                    >
                                         <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-600/20 flex items-center justify-center">
-                                                <span className="text-emerald-400 font-bold text-sm">{result.hs_code.slice(0, 2)}</span>
+                                            <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center group-hover:bg-[#222] transition-colors">
+                                                <TrendingUp className="w-4 h-4 text-gray-400 group-hover:text-white" />
                                             </div>
                                             <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <code className="text-lg font-bold text-white">{result.hs_code}</code>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-white font-mono font-medium">{result.hs_code}</span>
                                                     {result.is_cbam_relevant && (
-                                                        <span className="px-2 py-0.5 text-xs bg-amber-500/20 text-amber-400 rounded-full">
-                                                            CBAM
-                                                        </span>
+                                                        <span className="px-1.5 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] uppercase font-bold rounded">CBAM</span>
                                                     )}
                                                     {result.is_restricted && (
-                                                        <span className="px-2 py-0.5 text-xs bg-red-500/20 text-red-400 rounded-full">
-                                                            Restricted
-                                                        </span>
+                                                        <span className="px-1.5 py-0.5 bg-red-500/10 text-red-500 text-[10px] uppercase font-bold rounded">Restricted</span>
                                                     )}
                                                 </div>
-                                                <p className="text-gray-400">{result.description}</p>
+                                                <p className="text-gray-500 text-sm line-clamp-1 max-w-md">{result.description}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-6 text-right">
-                                            <div>
-                                                <p className="text-xs text-gray-500">Basic Duty</p>
-                                                <p className="text-white font-medium">{result.basic_duty_rate || 0}%</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-500">IGST</p>
-                                                <p className="text-white font-medium">{result.igst_rate || 18}%</p>
-                                            </div>
-                                            <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
+
+                                        <div className="text-right">
+                                            <p className="text-white font-medium">{result.basic_duty_rate || 0}%</p>
+                                            <p className="text-xs text-gray-500">Duty Rate</p>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </section>
-            </main>
-        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-20 border-2 border-dashed border-[#1A1A1A] rounded-2xl">
+                                <p className="text-gray-600">No database results found.</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </DashboardWrapper>
     );
 }
 
 export default function SearchPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            </div>
+            <DashboardWrapper>
+                <div className="flex items-center justify-center h-full">
+                    <Loader2 className="w-8 h-8 text-[#FF5100] animate-spin" />
+                </div>
+            </DashboardWrapper>
         }>
             <SearchContent />
         </Suspense>
